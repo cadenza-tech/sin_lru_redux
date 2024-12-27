@@ -1,0 +1,202 @@
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 3.4
+  NewCops: enable
+
+# https://docs.rubocop.org/rubocop/cops_gemspec.html#gemspecrequiredrubyversion
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_layout.html#layoutfirstarrayelementindentation
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
+# https://docs.rubocop.org/rubocop/cops_layout.html#layoutlinelength
+Layout/LineLength:
+  Enabled: true
+  Max: 150
+  AllowURI: false
+
+# https://docs.rubocop.org/rubocop/cops_lint.html#lintmissingsuper
+Lint/MissingSuper:
+  Enabled: true
+  Exclude:
+    - 'app/views/components/**/component.rb'
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsabcsize
+Metrics/AbcSize:
+  Enabled: true
+  Max: 30
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsblocklength
+Metrics/BlockLength:
+  Enabled: true
+  Max: 30
+  Exclude:
+    - 'config/routes.rb'
+    - 'db/seeds.rb'
+    - 'spec/**/*_spec.rb'
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsblocknesting
+Metrics/BlockNesting:
+  Enabled: true
+  Max: 3
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsclasslength
+Metrics/ClassLength:
+  Enabled: true
+  CountComments: false
+  Max: 400
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricscyclomaticcomplexity
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 20
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsmethodlength
+Metrics/MethodLength:
+  Enabled: true
+  CountComments: false
+  Max: 25
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsmodulelength
+Metrics/ModuleLength:
+  Enabled: true
+  Max: 200
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsparameterlists
+Metrics/ParameterLists:
+  Enabled: true
+  Max: 5
+  CountKeywordArgs: true
+
+# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsperceivedcomplexity
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 20
+
+# https://docs.rubocop.org/rubocop/cops_naming.html#namingaccessormethodname
+Naming/AccessorMethodName:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_naming.html#namingblockforwarding
+Naming/BlockForwarding:
+  Enabled: true
+  EnforcedStyle: explicit
+
+# https://docs.rubocop.org/rubocop/cops_naming.html#namingmemoizedinstancevariablename
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleaccessmodifierdeclarations
+Style/AccessModifierDeclarations:
+  Enabled: true
+  AllowModifiersOnSymbols: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylealias
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleargumentsforwarding
+Style/ArgumentsForwarding:
+  Enabled: true
+  UseAnonymousForwarding: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleasciicomments
+Style/AsciiComments:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleblockcomments
+Style/BlockComments:
+  Enabled: true
+  Exclude:
+    - 'spec/spec_helper.rb'
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleclassandmodulechildren
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylecollectionmethods
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    detect: 'detect'
+    find: 'detect'
+    inject: 'inject'
+    reduce: 'inject'
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleconditionalassignment
+Style/ConditionalAssignment:
+  Enabled: true
+  EnforcedStyle: assign_inside_condition
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styledocumentation
+Style/Documentation:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleemptymethod
+Style/EmptyMethod:
+  Enabled: true
+  EnforcedStyle: expanded
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylehashsyntax
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
+  EnforcedShorthandSyntax: never
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylelambda
+Style/Lambda:
+  Enabled: true
+  EnforcedStyle: literal
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylelineendconcatenation
+Style/LineEndConcatenation:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylenumericliterals
+Style/NumericLiterals:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylenumericpredicate
+Style/NumericPredicate:
+  Enabled: true
+  EnforcedStyle: comparison
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleraiseargs
+Style/RaiseArgs:
+  Enabled: true
+  EnforcedStyle: compact
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylesuperarguments
+Style/SuperArguments:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylesymbolarray
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleternaryparentheses
+Style/TernaryParentheses:
+  Enabled: true
+  EnforcedStyle: require_parentheses_when_complex
+  AllowSafeAssignment: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styletrailingunderscorevariable
+Style/TrailingUnderscoreVariable:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#styleunpackfirst
+Style/UnpackFirst:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_style.html#stylewordarray
+Style/WordArray:
+  Enabled: false
