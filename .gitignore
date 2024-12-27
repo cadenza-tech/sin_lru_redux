@@ -3,6 +3,7 @@
 *.swp
 .bundle
 .config
+.vscode
 .yardoc
 _yardoc
 coverage
