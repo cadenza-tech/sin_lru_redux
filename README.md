@@ -1,5 +1,8 @@
-# LruRedux [![Gem Version](https://badge.fury.io/rb/lru_redux.svg)](http://badge.fury.io/rb/lru_redux)
+# SinLruRedux [![Gem Version](https://badge.fury.io/rb/sin_lru_redux.svg)](http://badge.fury.io/rb/sin_lru_redux)
+
 An efficient, thread safe LRU cache.
+
+Forked from [LruRedux](https://github.com/SamSaffron/lru_redux).
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -14,19 +17,15 @@ An efficient, thread safe LRU cache.
 
 Add this line to your application's Gemfile:
 
-    gem 'lru_redux'
+    gem 'sin_lru_redux'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
-    $ gem install lru_redux
-
-Ruby 1.8 - v0.8.4 is the last compatible release:
-
-    gem 'lru_redux', '~> 0.8.4'
+    $ gem install sin_lru_redux
 
 ## Usage
 
@@ -35,41 +34,41 @@ require 'lru_redux'
 
 # non thread safe
 cache = LruRedux::Cache.new(100)
-cache[:a] = "1"
-cache[:b] = "2"
+cache[:a] = '1'
+cache[:b] = '2'
 
 cache.to_a
-# [[:b,"2"],[:a,"1"]]
+# [[:b, '2'], [:a, '1']]
 # note the order matters here, last accessed is first
 
 cache[:a] # a pushed to front
-# "1"
+# '1'
 
 cache.to_a
-# [[:a,"1"],[:b,"2"]]
+# [[:a, '1'], [:b, '2']]
 cache.delete(:a)
-cache.each {|k,v| p "#{k} #{v}"}
+cache.each { |k, v| puts "#{k} #{v}"}
 # b 2
 
 cache.max_size = 200 # cache now stores 200 items
 cache.clear # cache has no items
 
-cache.getset(:a){1}
+cache.getset(:a) { 1 }
 cache.to_a
-#[[:a,1]]
+#[[:a, 1]]
 
 # already set so don't call block
-cache.getset(:a){99}
+cache.getset(:a) { 99 }
 cache.to_a
-#[[:a,1]]
+#[[:a, 1]]
 
 # for thread safe access, all methods on cache
 # are protected with a mutex
 cache = LruRedux::ThreadSafeCache.new(100)
-
 ```
 
 #### TTL Cache
+
 The TTL cache extends the functionality of the LRU cache with a Time To Live eviction strategy. TTL eviction occurs on every access and takes precedence over LRU eviction, meaning a 'live' value will never be evicted over an expired one.
 
 ```ruby
@@ -85,11 +84,11 @@ cache = LruRedux::TTL::Cache.new(100, 5 * 60)
 
 Timecop.freeze(Time.now)
 
-cache[:a] = "1"
-cache[:b] = "2"
+cache[:a] = '1'
+cache[:b] = '2'
 
 cache.to_a
-# => [[:b,"2"],[:a,"1"]]
+# => [[:b, '2'], [:a, '1']]
 
 # Now we advance time 5 min 30 sec into the future.
 Timecop.freeze(Time.now + 330)
@@ -100,8 +99,8 @@ cache.to_a
 
 # The TTL can be updated on a live cache using #ttl=.
 # Currently cached items will be evicted under the new TTL.
-cache[:a] = "1"
-cache[:b] = "2"
+cache[:a] = '1'
+cache[:b] = '2'
 
 Timecop.freeze(Time.now + 330)
 
@@ -111,7 +110,7 @@ cache.ttl = 10 * 60
 # the items are still cached when the ttl is changed and
 # are now under the 10 minute TTL.
 cache.to_a
-# => [[:b,"2"],[:a,"1"]]
+# => [[:b, '2'], [:a, '1']]
 
 # TTL eviction can be triggered manually with the #expire method.
 Timecop.freeze(Time.now + 330)
@@ -135,6 +134,7 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 ```
 
 ## Cache Methods
+
 - `#getset` Takes a key and block.  Will return a value if cached, otherwise will execute the block and cache the resulting value.
 - `#fetch` Takes a key and optional block.  Will return a value if cached, otherwise will execute the block and return the resulting value or return nil if no block is provided.
 - `#[]` Takes a key.  Will return a value if cached, otherwise nil.
@@ -149,8 +149,11 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 - `#count` Return the current number of items stored in the cache.
 - `#max_size` Returns the current maximum size of the cache.
 - `#max_size=` Takes a positive number.  Changes the current max_size and triggers a resize.  Also triggers TTL eviction on the TTL cache.
+- `#ignore_nil` Returns the current ignore nil setting.
+- `#ignore_nil=` Takes true or false.  Changes the current ignore nil setting.
 
 #### TTL Cache Specific
+
 - `#ttl` Returns the current TTL of the cache.
 - `#ttl=` Takes `:none` or a positive number.  Changes the current ttl and triggers a TTL eviction.
 - `#expire` Triggers a TTL eviction.
@@ -160,8 +163,10 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 see: benchmark directory (a million random lookup / store)
 
 #### LRU
+
 ##### Ruby 2.2.1
-```
+
+```shell
 $ ruby ./bench/bench.rb
 
 Rehearsal -------------------------------------------------------------
@@ -180,29 +185,11 @@ LruRedux::Cache             0.910000   0.000000   0.910000 (  0.913108)
 LruRedux::ThreadSafeCache   2.200000   0.010000   2.210000 (  2.212108)
 ```
 
-##### Ruby 2.0.0-p643
-Implementation is slightly different for Ruby versions before 2.1 due to a Ruby bug. http://bugs.ruby-lang.org/issues/8312
-```
-$ ruby ./bench/bench.rb
-Rehearsal -------------------------------------------------------------
-ThreadSafeLru               4.790000   0.040000   4.830000 (  4.828370)
-LRU                         2.170000   0.010000   2.180000 (  2.180630)
-LRUCache                    1.810000   0.000000   1.810000 (  1.814737)
-LruRedux::Cache             1.330000   0.010000   1.340000 (  1.325554)
-LruRedux::ThreadSafeCache   2.770000   0.000000   2.770000 (  2.777754)
---------------------------------------------------- total: 12.930000sec
-
-                                user     system      total        real
-ThreadSafeLru               4.710000   0.060000   4.770000 (  4.773233)
-LRU                         2.120000   0.010000   2.130000 (  2.135111)
-LRUCache                    1.780000   0.000000   1.780000 (  1.781392)
-LruRedux::Cache             1.190000   0.010000   1.200000 (  1.201908)
-LruRedux::ThreadSafeCache   2.650000   0.010000   2.660000 (  2.652580)
-```
-
 #### TTL
+
 ##### Ruby 2.2.1
-```
+
+```shell
 $ ruby ./bench/bench_ttl.rb
 Rehearsal -----------------------------------------------------------------------
 FastCache                             6.240000   0.070000   6.310000 (  6.302569)
@@ -219,24 +206,28 @@ LruRedux::TTL::Cache (TTL disabled)   2.440000   0.000000   2.440000 (  2.446269
 ```
 
 ## Other Caches
+
 This is a list of the caches that are used in the benchmarks.
 
 #### LRU
+
 - RubyGems: https://rubygems.org/gems/lru
 - Homepage: http://lru.rubyforge.org/
 
 #### LRUCache
+
 - RubyGems: https://rubygems.org/gems/lru_cache
 - Homepage: https://github.com/brendan/lru_cache
 
 #### ThreadSafeLru
+
 - RubyGems: https://rubygems.org/gems/threadsafe-lru
 - Homepage: https://github.com/draganm/threadsafe-lru
 
 #### FastCache
+
 - RubyGems: https://rubygems.org/gems/fast_cache
 - Homepage: https://github.com/swoop-inc/fast_cache
-
 
 ## Contributing
 
@@ -247,6 +238,13 @@ This is a list of the caches that are used in the benchmarks.
 5. Create new Pull Request
 
 ## Changelog
+
+### version 2.0.0 - 28-Dec-2024
+
+- New: Add ignore_nil argument to cache initialize arguments.  If true, blocks called by getset yielding nil values will be returned but not stored in the cache.
+- Fix: Fix LruRedux::TTL::ThreadSafeCache#delete to return deleted value.
+- Ruby Support: Drop runtime support for Ruby 2.3 and below and JRuby.
+
 ### version 1.1.0 - 30-Mar-2015
 
 - New: TTL cache added.  This cache is LRU like with the addition of time-based eviction.  Check the Usage -> TTL Cache section in README.md for details.
@@ -269,7 +267,6 @@ This is a list of the caches that are used in the benchmarks.
 - Perf: use #size instead of #count when checking length @Seberius
 - Fix: Cache could grow beyond its size in Ruby 1.8 @Seberius
 - Fix: #each could deadlock in Ruby 1.8 @Seberius
-
 
 ### version 0.8.1 - 7-Sep-2013
 
