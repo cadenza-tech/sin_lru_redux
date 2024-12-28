@@ -110,6 +110,13 @@ class LruRedux::Cache
 
   protected
 
+  # for cache validation only, ensures all is sound
+  def valid?
+    true
+  end
+
+  private
+
   def valid_max_size?(max_size)
     return true if max_size.is_a?(Integer) && max_size >= 1
 
@@ -120,10 +127,5 @@ class LruRedux::Cache
     return true if [true, false].include?(ignore_nil)
 
     false
-  end
-
-  # for cache validation only, ensures all is sound
-  def valid?
-    true
   end
 end
