@@ -243,7 +243,7 @@ This is a list of the caches that are used in the benchmarks.
 
 - New: Add ignore_nil argument to cache initialize arguments.  If true, blocks called by getset yielding nil values will be returned but not stored in the cache.
 - Fix: Fix LruRedux::TTL::ThreadSafeCache#delete to return deleted value.
-- Ruby Support: Drop runtime support for Ruby 2.3 and below and JRuby.
+- Ruby Support: Drop runtime support for Ruby 2.2 and below and JRuby.
 
 ### version 1.1.0 - 30-Mar-2015
 
