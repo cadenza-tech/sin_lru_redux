@@ -7,13 +7,20 @@ require 'lru_redux/version'
 Gem::Specification.new do |spec|
   spec.name = 'sin_lru_redux'
   spec.version = LruRedux::VERSION
-  spec.authors = ['Masahiro']
-  spec.email = ['watanabe@cadenza-tech.com']
   spec.description = 'An efficient implementation of an lru cache'
   spec.summary = 'An efficient implementation of an lru cache'
-  spec.homepage = 'https://github.com/cadenza-tech/sin_lru_redux'
+  spec.authors = ['Masahiro']
+  spec.email = ['watanabe@cadenza-tech.com']
   spec.license = 'MIT'
+
+  github_root_uri = 'https://github.com/cadenza-tech/sin_lru_redux'
+  spec.homepage = "#{github_root_uri}/tree/#{spec.version}/#{spec.name}"
   spec.metadata = {
+    'homepage_uri' => spec.homepage,
+    'source_code_uri' => spec.homepage,
+    'changelog_uri' => "#{github_root_uri}/blob/#{spec.version}#changelog",
+    'bug_tracker_uri' => "#{github_root_uri}/issues",
+    'documentation_uri' => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}",
     'rubygems_mfa_required' => 'true'
   }
 
