@@ -140,8 +140,8 @@ module LruRedux
       def delete(key)
         ttl_evict
 
-        @data_lru.delete(key)
         @data_ttl.delete(key)
+        @data_lru.delete(key)
       end
 
       alias_method :evict, :delete
@@ -155,8 +155,8 @@ module LruRedux
       alias_method :has_key?, :key?
 
       def clear
-        @data_lru.clear
         @data_ttl.clear
+        @data_lru.clear
       end
 
       def expire
