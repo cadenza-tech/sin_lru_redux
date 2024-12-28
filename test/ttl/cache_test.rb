@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timecop'
 require './test/cache_test'
 
@@ -9,7 +11,8 @@ class TTLCacheTest < CacheTest
 
   def teardown
     Timecop.return
-    assert_equal true, @c.send(:valid?)
+
+    assert @c.send(:valid?) # rubocop:disable Minitest/AssertionInLifecycleHook
   end
 
   def test_ttl
@@ -40,7 +43,7 @@ class TTLCacheTest < CacheTest
 
     @c.expire
 
-    assert_equal([], @c.to_a)
+    assert_empty @c.to_a
   end
 
   def test_ttl_eviction_on_new_max_size
@@ -51,7 +54,7 @@ class TTLCacheTest < CacheTest
 
     @c.max_size = 10
 
-    assert_equal([], @c.to_a)
+    assert_empty @c.to_a
   end
 
   def test_ttl_eviction_on_new_ttl
@@ -66,7 +69,7 @@ class TTLCacheTest < CacheTest
 
     @c.ttl = 2 * 60
 
-    assert_equal([], @c.to_a)
+    assert_empty @c.to_a
   end
 
   def test_ttl_precedence_over_lru
@@ -79,14 +82,12 @@ class TTLCacheTest < CacheTest
 
     @c[:a]
 
-    assert_equal [[:a, 1], [:c, 3], [:b, 2]],
-                 @c.to_a
+    assert_equal [[:a, 1], [:c, 3], [:b, 2]], @c.to_a
 
     Timecop.freeze(Time.now + 270)
 
     @c[:d] = 4
 
-    assert_equal [[:d, 4], [:c, 3], [:b, 2]],
-                 @c.to_a
+    assert_equal [[:d, 4], [:c, 3], [:b, 2]], @c.to_a
   end
 end

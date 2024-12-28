@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'lru_redux'
 require 'minitest/autorun'
 require 'minitest/pride'
 
-class CacheTest < MiniTest::Test
+class CacheTest < Minitest::Test
   def setup
     @c = LruRedux::Cache.new(3)
   end
 
   def teardown
-    assert_equal true, @c.send(:valid?)
+    assert @c.send(:valid?) # rubocop:disable Minitest/AssertionInLifecycleHook
   end
 
   def test_drops_old
@@ -17,27 +19,28 @@ class CacheTest < MiniTest::Test
     @c[:c] = 3
     @c[:d] = 4
 
-    assert_equal [[:d,4],[:c,3],[:b,2]], @c.to_a
+    assert_equal [[:d, 4], [:c, 3], [:b, 2]], @c.to_a
     assert_nil @c[:a]
   end
 
   def test_fetch
     @c[:a] = nil
     @c[:b] = 2
-    assert_equal @c.fetch(:a){1}, nil
-    assert_equal @c.fetch(:c){3}, 3
 
-    assert_equal [[:a,nil],[:b,2]], @c.to_a
+    assert_nil @c.fetch(:a) { 1 } # rubocop:disable Style/RedundantFetchBlock
+    assert_equal 3, @c.fetch(:c) { 3 } # rubocop:disable Style/RedundantFetchBlock
+    assert_equal [[:a, nil], [:b, 2]], @c.to_a
   end
 
-  def test_getset
-   assert_equal @c.getset(:a){1}, 1
-   @c.getset(:b){2}
-   assert_equal @c.getset(:a){11}, 1
-   @c.getset(:c){3}
-   assert_equal @c.getset(:d){4}, 4
+  def test_getset # rubocop:disable Minitest/MultipleAssertions
+    assert_equal 1, @c.getset(:a) { 1 }
+    @c.getset(:b) { 2 }
 
-    assert_equal [[:d,4],[:c,3],[:a,1]], @c.to_a
+    assert_equal 1, @c.getset(:a) { 11 }
+    @c.getset(:c) { 3 }
+
+    assert_equal 4, @c.getset(:d) { 4 }
+    assert_equal [[:d, 4], [:c, 3], [:a, 1]], @c.to_a
   end
 
   def test_pushes_lru_to_back
@@ -48,18 +51,17 @@ class CacheTest < MiniTest::Test
     @c[:a]
     @c[:d] = 4
 
-    assert_equal [[:d,4],[:a,1],[:c,3]], @c.to_a
+    assert_equal [[:d, 4], [:a, 1], [:c, 3]], @c.to_a
     assert_nil @c[:b]
   end
 
-
-  def test_delete
+  def test_delete # rubocop:disable Minitest/MultipleAssertions
     @c[:a] = 1
     @c[:b] = 2
     @c[:c] = 3
     @c.delete(:a)
 
-    assert_equal [[:c,3],[:b,2]], @c.to_a
+    assert_equal [[:c, 3], [:b, 2]], @c.to_a
     assert_nil @c[:a]
 
     # Regression test for a bug in the legacy delete method
@@ -68,7 +70,7 @@ class CacheTest < MiniTest::Test
     @c[:e] = 5
     @c[:f] = 6
 
-    assert_equal [[:f,6],[:e,5],[:d,4]], @c.to_a
+    assert_equal [[:f, 6], [:e, 5], [:d, 4]], @c.to_a
     assert_nil @c[:b]
   end
 
@@ -76,8 +78,8 @@ class CacheTest < MiniTest::Test
     @c[:a] = 1
     @c[:b] = 2
 
-    assert_equal true, @c.key?(:a)
-    assert_equal false, @c.key?(:c)
+    assert @c.key?(:a)
+    refute @c.key?(:c)
   end
 
   def test_update
@@ -85,7 +87,8 @@ class CacheTest < MiniTest::Test
     @c[:b] = 2
     @c[:c] = 3
     @c[:a] = 99
-    assert_equal [[:a,99],[:c,3],[:b,2]], @c.to_a
+
+    assert_equal [[:a, 99], [:c, 3], [:b, 2]], @c.to_a
   end
 
   def test_clear
@@ -94,7 +97,8 @@ class CacheTest < MiniTest::Test
     @c[:c] = 3
 
     @c.clear
-    assert_equal [], @c.to_a
+
+    assert_empty @c.to_a
   end
 
   def test_grow
@@ -103,7 +107,8 @@ class CacheTest < MiniTest::Test
     @c[:c] = 3
     @c.max_size = 4
     @c[:d] = 4
-    assert_equal [[:d,4],[:c,3],[:b,2],[:a,1]], @c.to_a
+
+    assert_equal [[:d, 4], [:c, 3], [:b, 2], [:a, 1]], @c.to_a
   end
 
   def test_shrink
@@ -111,7 +116,8 @@ class CacheTest < MiniTest::Test
     @c[:b] = 2
     @c[:c] = 3
     @c.max_size = 1
-    assert_equal [[:c,3]], @c.to_a
+
+    assert_equal [[:c, 3]], @c.to_a
   end
 
   def test_each
@@ -121,12 +127,11 @@ class CacheTest < MiniTest::Test
     @c[:c] = 3
 
     pairs = []
-    @c.each do |pair|
+    @c.each do |pair| # rubocop:disable Style/MapIntoArray
       pairs << pair
     end
 
-    assert_equal [[:c,3],[:b, 2]], pairs
-
+    assert_equal [[:c, 3], [:b, 2]], pairs
   end
 
   def test_values
@@ -135,7 +140,7 @@ class CacheTest < MiniTest::Test
     @c[:c] = 3
     @c[:d] = 4
 
-    assert_equal [4,3,2], @c.values
+    assert_equal [4, 3, 2], @c.values
     assert_nil @c[:a]
   end
 end

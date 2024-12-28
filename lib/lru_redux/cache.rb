@@ -1,11 +1,10 @@
-# Ruby 1.9 makes our life easier, Hash is already ordered
-#
-# This is an ultra efficient 1.9 freindly implementation
+# frozen_string_literal: true
+
 class LruRedux::Cache
   def initialize(*args)
     max_size, _ = args
 
-    raise ArgumentError.new(:max_size) if max_size < 1
+    raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
 
     @max_size = max_size
     @data = {}
@@ -14,7 +13,7 @@ class LruRedux::Cache
   def max_size=(max_size)
     max_size ||= @max_size
 
-    raise ArgumentError.new(:max_size) if max_size < 1
+    raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
 
     @max_size = max_size
 
@@ -27,7 +26,7 @@ class LruRedux::Cache
 
   def getset(key)
     found = true
-    value = @data.delete(key){ found = false }
+    value = @data.delete(key) { found = false }
     if found
       @data[key] = value
     else
@@ -39,36 +38,30 @@ class LruRedux::Cache
 
   def fetch(key)
     found = true
-    value = @data.delete(key){ found = false }
+    value = @data.delete(key) { found = false }
     if found
       @data[key] = value
     else
-      yield if block_given?
+      yield if block_given? # rubocop:disable Style/IfInsideElse
     end
   end
 
   def [](key)
     found = true
-    value = @data.delete(key){ found = false }
-    if found
-      @data[key] = value
-    else
-      nil
-    end
+    value = @data.delete(key) { found = false }
+    @data[key] = value if found
   end
 
-  def []=(key,val)
+  def []=(key, val)
     @data.delete(key)
     @data[key] = val
     @data.shift if @data.length > @max_size
-    val
+    val # rubocop:disable Lint/Void
   end
 
-  def each
+  def each(&block)
     array = @data.to_a
-    array.reverse!.each do |pair|
-      yield pair
-    end
+    array.reverse!.each(&block)
   end
 
   # used further up the chain, non thread safe each
@@ -105,6 +98,12 @@ class LruRedux::Cache
   end
 
   protected
+
+  def valid_max_size?(max_size)
+    return true if max_size.is_a?(Integer) && max_size >= 1
+
+    false
+  end
 
   # for cache validation only, ensures all is sound
   def valid?

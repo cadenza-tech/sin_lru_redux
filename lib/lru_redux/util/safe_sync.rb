@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'monitor'
 
 module LruRedux
@@ -81,7 +83,7 @@ module LruRedux
         end
       end
 
-      def has_key?(key)
+      def has_key?(key) # rubocop:disable Naming/PredicateName
         synchronize do
           super(key)
         end

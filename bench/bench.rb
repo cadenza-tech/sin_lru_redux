@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 require 'benchmark'
 require 'lru'
@@ -19,7 +21,8 @@ thread_safe_lru = ThreadSafeLru::LruCache.new(1_000)
 redux = LruRedux::Cache.new(1_000)
 redux_thread_safe = LruRedux::ThreadSafeCache.new(1_000)
 
-puts "** LRU Benchmarks **"
+puts '** LRU Benchmarks **'
+
 Benchmark.bmbm do |bm|
   bm.report 'ThreadSafeLru' do
     1_000_000.times { thread_safe_lru.get(rand(2_000)) { :value } }

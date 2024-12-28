@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LruRedux
   module TTL
     class Cache
@@ -8,10 +10,8 @@ module LruRedux
 
         ttl ||= :none
 
-        raise ArgumentError.new(:max_size) if
-            max_size < 1
-        raise ArgumentError.new(:ttl) unless
-            ttl == :none || ((ttl.is_a? Numeric) && ttl >= 0)
+        raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
+        raise ArgumentError.new(:ttl) unless valid_ttl?(ttl)
 
         @max_size = max_size
         @ttl = ttl
@@ -22,8 +22,7 @@ module LruRedux
       def max_size=(max_size)
         max_size ||= @max_size
 
-        raise ArgumentError.new(:max_size) if
-            max_size < 1
+        raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
 
         @max_size = max_size
 
@@ -32,9 +31,7 @@ module LruRedux
 
       def ttl=(ttl)
         ttl ||= @ttl
-
-        raise ArgumentError.new(:ttl) unless
-            ttl == :none || ((ttl.is_a? Numeric) && ttl >= 0)
+        raise ArgumentError.new(:ttl) unless valid_ttl?(ttl)
 
         @ttl = ttl
 
@@ -45,7 +42,7 @@ module LruRedux
         ttl_evict
 
         found = true
-        value = @data_lru.delete(key){ found = false }
+        value = @data_lru.delete(key) { found = false }
         if found
           @data_lru[key] = value
         else
@@ -67,11 +64,11 @@ module LruRedux
         ttl_evict
 
         found = true
-        value = @data_lru.delete(key){ found = false }
+        value = @data_lru.delete(key) { found = false }
         if found
           @data_lru[key] = value
         else
-          yield if block_given?
+          yield if block_given? # rubocop:disable Style/IfInsideElse
         end
       end
 
@@ -79,12 +76,8 @@ module LruRedux
         ttl_evict
 
         found = true
-        value = @data_lru.delete(key){ found = false }
-        if found
-          @data_lru[key] = value
-        else
-          nil
-        end
+        value = @data_lru.delete(key) { found = false }
+        @data_lru[key] = value if found
       end
 
       def []=(key, val)
@@ -103,16 +96,14 @@ module LruRedux
           @data_lru.delete(key)
         end
 
-        val
+        val # rubocop:disable Lint/Void
       end
 
-      def each
+      def each(&block)
         ttl_evict
 
         array = @data_lru.to_a
-        array.reverse!.each do |pair|
-          yield pair
-        end
+        array.reverse!.each(&block)
       end
 
       # used further up the chain, non thread safe each
@@ -164,6 +155,19 @@ module LruRedux
 
       protected
 
+      def valid_max_size?(max_size)
+        return true if max_size.is_a?(Integer) && max_size >= 1
+
+        false
+      end
+
+      def valid_ttl?(ttl)
+        return true if ttl == :none
+        return true if ttl.is_a?(Numeric) && ttl >= 0
+
+        false
+      end
+
       # for cache validation only, ensures all is sound
       def valid?
         @data_lru.size == @data_ttl.size
@@ -196,4 +200,3 @@ module LruRedux
     end
   end
 end
-

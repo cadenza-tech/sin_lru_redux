@@ -1,4 +1,19 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in lru_redux.gemspec
 gemspec
+
+group :development, :test do
+  gem 'bundler'
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'minitest'
+  gem 'rake'
+  gem 'rb-inotify'
+  gem 'rubocop'
+  gem 'rubocop-minitest'
+  gem 'rubocop-performance'
+  gem 'rubocop-rake'
+  gem 'timecop'
+end

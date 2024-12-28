@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './test/ttl/cache_test'
 
 class TTLThreadSafeCacheTest < TTLCacheTest
@@ -11,7 +13,7 @@ class TTLThreadSafeCacheTest < TTLCacheTest
     @c[:b] = 2
 
     # should not blow up
-    @c.each do |k, _|
+    @c.each do |k, _| # rubocop:disable Style/HashEachMethods
       @c[k]
     end
   end
