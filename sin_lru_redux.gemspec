@@ -7,14 +7,17 @@ require 'lru_redux/version'
 Gem::Specification.new do |spec|
   spec.name = 'sin_lru_redux'
   spec.version = LruRedux::VERSION
-  spec.description = 'An efficient implementation of an lru cache'
-  spec.summary = 'An efficient implementation of an lru cache'
+  spec.description = <<~DESCRIPTION
+    Efficient and thread-safe LRU cache.
+    Forked from LruRedux.
+  DESCRIPTION
+  spec.summary = 'Efficient and thread-safe LRU cache.'
   spec.authors = ['Masahiro']
   spec.email = ['watanabe@cadenza-tech.com']
   spec.license = 'MIT'
 
   github_root_uri = 'https://github.com/cadenza-tech/sin_lru_redux'
-  spec.homepage = "#{github_root_uri}/tree/#{spec.version}/#{spec.name}"
+  spec.homepage = "#{github_root_uri}/tree/v#{spec.version}"
   spec.metadata = {
     'homepage_uri' => spec.homepage,
     'source_code_uri' => spec.homepage,
