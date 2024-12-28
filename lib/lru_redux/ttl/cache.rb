@@ -169,25 +169,6 @@ module LruRedux
 
       protected
 
-      def valid_max_size?(max_size)
-        return true if max_size.is_a?(Integer) && max_size >= 1
-
-        false
-      end
-
-      def valid_ttl?(ttl)
-        return true if ttl == :none
-        return true if ttl.is_a?(Numeric) && ttl >= 0
-
-        false
-      end
-
-      def valid_ignore_nil?(ignore_nil)
-        return true if [true, false].include?(ignore_nil)
-
-        false
-      end
-
       # for cache validation only, ensures all is sound
       def valid?
         @data_lru.size == @data_ttl.size
@@ -216,6 +197,27 @@ module LruRedux
           @data_ttl.delete(key)
           @data_lru.delete(key)
         end
+      end
+
+      private
+
+      def valid_max_size?(max_size)
+        return true if max_size.is_a?(Integer) && max_size >= 1
+
+        false
+      end
+
+      def valid_ttl?(ttl)
+        return true if ttl == :none
+        return true if ttl.is_a?(Numeric) && ttl >= 0
+
+        false
+      end
+
+      def valid_ignore_nil?(ignore_nil)
+        return true if [true, false].include?(ignore_nil)
+
+        false
       end
     end
   end
