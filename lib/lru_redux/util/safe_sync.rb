@@ -23,6 +23,12 @@ module LruRedux
         end
       end
 
+      def ignore_nil=(ignore_nil)
+        synchronize do
+          super(ignore_nil)
+        end
+      end
+
       def getset(key)
         synchronize do
           super(key)

@@ -3,18 +3,21 @@
 module LruRedux
   module TTL
     class Cache
-      attr_reader :max_size, :ttl
+      attr_reader :max_size, :ttl, :ignore_nil
 
       def initialize(*args)
-        max_size, ttl = args
+        max_size, ttl, ignore_nil = args
 
         ttl ||= :none
+        ignore_nil ||= false
 
         raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
         raise ArgumentError.new(:ttl) unless valid_ttl?(ttl)
+        raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
 
         @max_size = max_size
         @ttl = ttl
+        @ignore_nil = ignore_nil
         @data_lru = {}
         @data_ttl = {}
       end
@@ -38,6 +41,13 @@ module LruRedux
         ttl_evict
       end
 
+      def ignore_nil=(ignore_nil)
+        ignore_nil ||= @ignore_nil
+        raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+
+        @ignore_nil = ignore_nil
+      end
+
       def getset(key)
         ttl_evict
 
@@ -46,14 +56,18 @@ module LruRedux
         if found
           @data_lru[key] = value
         else
-          result = @data_lru[key] = yield
-          @data_ttl[key] = Time.now.to_f
+          result = yield
 
-          if @data_lru.size > @max_size
-            key, _ = @data_lru.first
+          if !result.nil? || !@ignore_nil
+            @data_lru[key] = result
+            @data_ttl[key] = Time.now.to_f
 
-            @data_ttl.delete(key)
-            @data_lru.delete(key)
+            if @data_lru.size > @max_size
+              key, _ = @data_lru.first
+
+              @data_ttl.delete(key)
+              @data_lru.delete(key)
+            end
           end
 
           result
@@ -164,6 +178,12 @@ module LruRedux
       def valid_ttl?(ttl)
         return true if ttl == :none
         return true if ttl.is_a?(Numeric) && ttl >= 0
+
+        false
+      end
+
+      def valid_ignore_nil?(ignore_nil)
+        return true if [true, false].include?(ignore_nil)
 
         false
       end

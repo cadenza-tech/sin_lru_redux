@@ -2,11 +2,15 @@
 
 class LruRedux::Cache
   def initialize(*args)
-    max_size, _ = args
+    max_size, ignore_nil, _ = args
+
+    ignore_nil ||= false
 
     raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
+    raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
 
     @max_size = max_size
+    @ignore_nil = ignore_nil
     @data = {}
   end
 
@@ -22,6 +26,13 @@ class LruRedux::Cache
 
   def ttl=(_)
     nil
+  end
+
+  def ignore_nil=(ignore_nil)
+    ignore_nil ||= @ignore_nil
+    raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+
+    @ignore_nil = ignore_nil
   end
 
   def getset(key)
@@ -101,6 +112,12 @@ class LruRedux::Cache
 
   def valid_max_size?(max_size)
     return true if max_size.is_a?(Integer) && max_size >= 1
+
+    false
+  end
+
+  def valid_ignore_nil?(ignore_nil)
+    return true if [true, false].include?(ignore_nil)
 
     false
   end
