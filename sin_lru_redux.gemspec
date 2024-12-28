@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'lru_redux/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "lru_redux"
+  spec.name          = "sin_lru_redux"
   spec.version       = LruRedux::VERSION
-  spec.authors       = ["Sam Saffron", "Kaijah Hougham"]
-  spec.email         = ["sam.saffron@gmail.com", "github@seberius.com"]
+  spec.authors       = ["Masahiro"]
+  spec.email         = ["watanabe@cadenza-tech.com"]
   spec.description   = %q{An efficient implementation of an lru cache}
   spec.summary       = %q{An efficient implementation of an lru cache}
-  spec.homepage      = "https://github.com/SamSaffron/lru_redux"
+  spec.homepage      = "https://github.com/cadenza-tech/sin_lru_redux"
   spec.license       = "MIT"
 
   spec.required_ruby_version = ">= 2.3.0"
