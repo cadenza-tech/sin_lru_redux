@@ -1,6 +1,6 @@
 # SinLruRedux [![Gem Version](https://badge.fury.io/rb/sin_lru_redux.svg)](http://badge.fury.io/rb/sin_lru_redux)
 
-An efficient, thread safe LRU cache.
+Efficient and thread-safe LRU cache.
 
 Forked from [LruRedux](https://github.com/SamSaffron/lru_redux).
 
@@ -238,6 +238,12 @@ This is a list of the caches that are used in the benchmarks.
 5. Create new Pull Request
 
 ## Changelog
+
+### version 2.0.1 - 28-Dec-2024
+
+- Refactor: Make valid_xxxx? methods private
+- Fix: Fix lint CI.
+- Other: Update gemspec
 
 ### version 2.0.0 - 28-Dec-2024
 
