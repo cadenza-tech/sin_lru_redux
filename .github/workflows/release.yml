@@ -1,0 +1,20 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3
+          bundler-cache: true
+      - name: Release to RubyGems
+        uses: rubygems/release-gem@v1

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require_relative 'test_helper'
 
 class TestCache < Minitest::Test
   def setup
