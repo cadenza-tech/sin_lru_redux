@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     'homepage_uri' => spec.homepage,
     'source_code_uri' => spec.homepage,
-    'changelog_uri' => "#{github_root_uri}/blob/#{spec.version}#changelog",
+    'changelog_uri' => "#{github_root_uri}/blob/v#{spec.version}/CHANGELOG.md",
     'bug_tracker_uri' => "#{github_root_uri}/issues",
     'documentation_uri' => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}",
     'rubygems_mfa_required' => 'true'
