@@ -1,4 +1,6 @@
-# SinLruRedux [![Gem Version](https://badge.fury.io/rb/sin_lru_redux.svg)](http://badge.fury.io/rb/sin_lru_redux)
+# SinLruRedux
+
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cadenza-tech/sin_lru_redux/blob/main/LICENSE.txt) [![tag](https://img.shields.io/github/tag/cadenza-tech/sin_lru_redux.svg?logo=github&color=2EBC4F)](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CHANGELOG.md) [![release](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/release.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Arelease) [![test](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/test.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Arelease) [![lint](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/lint.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Arelease)
 
 Efficient and thread-safe LRU cache.
 
@@ -8,24 +10,24 @@ Forked from [LruRedux](https://github.com/SamSaffron/lru_redux).
 - [Usage](#usage)
   - [TTL Cache](#ttl-cache)
 - [Cache Methods](#cache-methods)
-- [Benchmarks](#benchmarks)
-- [Other Caches](#other-caches)
 - [Contributing](#contributing)
-- [Changelog](#changelog)
+- [Changelog](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CHANGELOG.md)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install the gem and add to the application's Gemfile by executing:
 
-    gem 'sin_lru_redux'
+```bash
+bundle add sin_lru_redux
+```
 
-And then execute:
+If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install sin_lru_redux
+```bash
+gem install sin_lru_redux
+```
 
 ## Usage
 
@@ -67,7 +69,7 @@ cache.to_a
 cache = LruRedux::ThreadSafeCache.new(100)
 ```
 
-#### TTL Cache
+**TTL Cache**
 
 The TTL cache extends the functionality of the LRU cache with a Time To Live eviction strategy. TTL eviction occurs on every access and takes precedence over LRU eviction, meaning a 'live' value will never be evicted over an expired one.
 
@@ -152,143 +154,20 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 - `#ignore_nil` Returns the current ignore nil setting.
 - `#ignore_nil=` Takes true or false.  Changes the current ignore nil setting.
 
-#### TTL Cache Specific
+**TTL Cache Specific**
 
 - `#ttl` Returns the current TTL of the cache.
 - `#ttl=` Takes `:none` or a positive number.  Changes the current ttl and triggers a TTL eviction.
 - `#expire` Triggers a TTL eviction.
 
-## Benchmarks
-
-see: benchmark directory (a million random lookup / store)
-
-#### LRU
-
-##### Ruby 2.2.1
-
-```shell
-$ ruby ./bench/bench.rb
-
-Rehearsal -------------------------------------------------------------
-ThreadSafeLru               4.500000   0.030000   4.530000 (  4.524213)
-LRU                         2.250000   0.000000   2.250000 (  2.249670)
-LRUCache                    1.720000   0.010000   1.730000 (  1.728243)
-LruRedux::Cache             0.960000   0.000000   0.960000 (  0.961292)
-LruRedux::ThreadSafeCache   2.180000   0.000000   2.180000 (  2.187714)
---------------------------------------------------- total: 11.650000sec
-
-                                user     system      total        real
-ThreadSafeLru               4.390000   0.020000   4.410000 (  4.415703)
-LRU                         2.140000   0.010000   2.150000 (  2.149626)
-LRUCache                    1.680000   0.010000   1.690000 (  1.688564)
-LruRedux::Cache             0.910000   0.000000   0.910000 (  0.913108)
-LruRedux::ThreadSafeCache   2.200000   0.010000   2.210000 (  2.212108)
-```
-
-#### TTL
-
-##### Ruby 2.2.1
-
-```shell
-$ ruby ./bench/bench_ttl.rb
-Rehearsal -----------------------------------------------------------------------
-FastCache                             6.240000   0.070000   6.310000 (  6.302569)
-LruRedux::TTL::Cache                  4.700000   0.010000   4.710000 (  4.712858)
-LruRedux::TTL::ThreadSafeCache        6.300000   0.010000   6.310000 (  6.319032)
-LruRedux::TTL::Cache (TTL disabled)   2.460000   0.010000   2.470000 (  2.470629)
-------------------------------------------------------------- total: 19.800000sec
-
-                                          user     system      total        real
-FastCache                             6.470000   0.070000   6.540000 (  6.536193)
-LruRedux::TTL::Cache                  4.640000   0.010000   4.650000 (  4.661793)
-LruRedux::TTL::ThreadSafeCache        6.310000   0.020000   6.330000 (  6.328840)
-LruRedux::TTL::Cache (TTL disabled)   2.440000   0.000000   2.440000 (  2.446269)
-```
-
-## Other Caches
-
-This is a list of the caches that are used in the benchmarks.
-
-#### LRU
-
-- RubyGems: https://rubygems.org/gems/lru
-- Homepage: http://lru.rubyforge.org/
-
-#### LRUCache
-
-- RubyGems: https://rubygems.org/gems/lru_cache
-- Homepage: https://github.com/brendan/lru_cache
-
-#### ThreadSafeLru
-
-- RubyGems: https://rubygems.org/gems/threadsafe-lru
-- Homepage: https://github.com/draganm/threadsafe-lru
-
-#### FastCache
-
-- RubyGems: https://rubygems.org/gems/fast_cache
-- Homepage: https://github.com/swoop-inc/fast_cache
-
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/abcd. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CODE_OF_CONDUCT.md).
 
-## Changelog
+## License
 
-### version 2.0.1 - 28-Dec-2024
+The gem is available as open source under the terms of the [MIT License](https://github.com/cadenza-tech/sin_lru_redux/blob/main/LICENSE.txt).
 
-- Refactor: Make valid_xxxx? methods private
-- Fix: Fix lint CI.
-- Other: Update gemspec
+## Code of Conduct
 
-### version 2.0.0 - 28-Dec-2024
-
-- New: Add ignore_nil argument to cache initialize arguments.  If true, blocks called by getset yielding nil values will be returned but not stored in the cache.
-- Fix: Fix LruRedux::TTL::ThreadSafeCache#delete to return deleted value.
-- Ruby Support: Drop runtime support for Ruby 2.2 and below and JRuby.
-
-### version 1.1.0 - 30-Mar-2015
-
-- New: TTL cache added.  This cache is LRU like with the addition of time-based eviction.  Check the Usage -> TTL Cache section in README.md for details.
-
-### version 1.0.0 - 26-Mar-2015
-
-- Ruby Support: Ruby 1.9+ is now required by LruRedux.  If you need to use LruRedux in Ruby 1.8, please specify gem version 0.8.4 in your Gemfile.  v0.8.4 is the last 1.8 compatible release and included a number of fixes and performance improvements for the Ruby 1.8 implementation. @Seberius
-- Perf: improve performance in Ruby 2.1+ on the MRI @Seberius
-
-### version 0.8.4 - 20-Feb-2015
-
-- Fix: regression of ThreadSafeCache under JRuby 1.7 @Seberius
-
-### version 0.8.3 - 20-Feb-2015
-
-- Perf: improve ThreadSafeCache performance @Seberius
-
-### version 0.8.2 - 16-Feb-2015
-
-- Perf: use #size instead of #count when checking length @Seberius
-- Fix: Cache could grow beyond its size in Ruby 1.8 @Seberius
-- Fix: #each could deadlock in Ruby 1.8 @Seberius
-
-### version 0.8.1 - 7-Sep-2013
-
-- Fix #each implementation
-- Fix deadlocks with ThreadSafeCache
-- Version jump is because its been used in production for quite a while now
-
-### version 0.0.6 - 24-April-2013
-
-- Fix bug in getset, overflow was not returning the yeilded val
-
-### version 0.0.5 - 23-April-2013
-
-- Added getset and fetch
-- Optimised implementation so it 20-30% faster on Ruby 1.9+
-
-### version 0.0.4 - 23-April-2013
-
-- Initial version
+Everyone interacting in the SinLruRedux project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CODE_OF_CONDUCT.md).
