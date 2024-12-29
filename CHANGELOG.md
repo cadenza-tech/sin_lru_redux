@@ -1,16 +1,26 @@
 # Changelog
 
+## [2.1.0] - 2024-12-30
+
+- New: Set default max_size to 1000
+- Test: Improve tests
+- Other: Update .gitignore
+- Other: Add bin
+- Other: Update Gemfile
+- Other: Improve gemspec
+- Other: Improve documents
+
 ## [2.0.1] - 2024-12-28
 
 - Refactor: Make valid_xxxx? methods private
-- Fix: Fix lint CI.
+- Fix: Fix lint CI
 - Other: Update gemspec
 
 ## [2.0.0] - 2024-12-28
 
 - New: Add ignore_nil argument to cache initialize arguments.  If true, blocks called by getset yielding nil values will be returned but not stored in the cache.
-- Fix: Fix LruRedux::TTL::ThreadSafeCache#delete to return deleted value.
-- Ruby Support: Drop runtime support for Ruby 2.2 and below and JRuby.
+- Fix: Fix LruRedux::TTL::ThreadSafeCache#delete to return deleted value
+- Ruby Support: Drop runtime support for Ruby 2.2 and below and JRuby
 
 ## [1.1.0] - 2015-3-30
 
