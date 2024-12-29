@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
-require 'lru_redux'
-require 'minitest/autorun'
-require 'minitest/pride'
+require 'test_helper'
 
-class CacheTest < Minitest::Test
+class TestCache < Minitest::Test
   def setup
     @c = LruRedux::Cache.new(3)
   end
 
   def teardown
-    assert @c.send(:valid?) # rubocop:disable Minitest/AssertionInLifecycleHook
+    assert @c.send(:valid?)
   end
 
   def test_drops_old
@@ -32,7 +30,7 @@ class CacheTest < Minitest::Test
     assert_equal [[:a, nil], [:b, 2]], @c.to_a
   end
 
-  def test_getset # rubocop:disable Minitest/MultipleAssertions
+  def test_getset
     assert_equal 1, @c.getset(:a) { 1 }
     @c.getset(:b) { 2 }
 
@@ -55,7 +53,7 @@ class CacheTest < Minitest::Test
     assert_nil @c[:b]
   end
 
-  def test_delete # rubocop:disable Minitest/MultipleAssertions
+  def test_delete
     @c[:a] = 1
     @c[:b] = 2
     @c[:c] = 3

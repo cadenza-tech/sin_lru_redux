@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require './test/ttl/cache_test'
+require 'test_helper'
+require_relative 'test_cache'
 
-class TTLThreadSafeCacheTest < TTLCacheTest
+class TestThreadSafeCache < TestCache
   def setup
-    Timecop.freeze(Time.now)
-    @c = LruRedux::TTL::ThreadSafeCache.new 3, 5 * 60
+    @c = LruRedux::ThreadSafeCache.new(3)
   end
 
   def test_recursion
