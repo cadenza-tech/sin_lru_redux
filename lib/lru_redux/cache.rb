@@ -4,6 +4,7 @@ class LruRedux::Cache
   def initialize(*args)
     max_size, ignore_nil, _ = args
 
+    max_size ||= 1000
     ignore_nil ||= false
 
     raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
