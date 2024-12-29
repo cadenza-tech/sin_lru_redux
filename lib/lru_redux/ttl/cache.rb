@@ -8,6 +8,7 @@ module LruRedux
       def initialize(*args)
         max_size, ttl, ignore_nil = args
 
+        max_size ||= 1000
         ttl ||= :none
         ignore_nil ||= false
 
