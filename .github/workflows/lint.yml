@@ -2,6 +2,11 @@ name: Lint
 on:
   pull_request:
     paths:
+      - '.github/workflows/lint.yml'
+      - '.rubocop.yml'
+      - 'Gemfile'
+      - 'Rakefile'
+      - 'sin_lru_redux.gemspec'
       - '**/*.rb'
 permissions:
   contents: read
