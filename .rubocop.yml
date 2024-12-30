@@ -4,7 +4,7 @@ require:
   - rubocop-rake
 
 AllCops:
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 2.3
   NewCops: enable
 
 # https://docs.rubocop.org/rubocop/cops_gemspec.html#gemspecrequiredrubyversion
