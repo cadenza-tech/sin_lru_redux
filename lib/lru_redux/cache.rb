@@ -138,13 +138,6 @@ class LruRedux::Cache
     ERROR
   end
 
-  def store_item(key, val)
-    @data.delete(key)
-    @data[key] = val if !val.nil? || !@ignore_nil
-    evict_excess
-    val
-  end
-
   def evict_excess
     @data.shift while @data.size > @max_size
   end
@@ -157,5 +150,12 @@ class LruRedux::Cache
     def evict_nil
       @data.reject! { |_key, value| value.nil? }
     end
+  end
+
+  def store_item(key, val)
+    @data.delete(key)
+    @data[key] = val if !val.nil? || !@ignore_nil
+    evict_excess
+    val
   end
 end
