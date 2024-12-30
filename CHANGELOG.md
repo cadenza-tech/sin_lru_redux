@@ -3,6 +3,9 @@
 ## [2.1.0] - 2024-12-30
 
 - New: Set default max_size to 1000
+- Fix: Fix a bug where ttl of item was not extended during LruRedux::TTL::Cache#getset, #fetch, and #[] execution
+- Fix: Fix a bug where items with nil value were not deleted when ignore_nil was changed
+- Refactor: Improve implementation
 - Test: Improve tests
 - Other: Update .gitignore
 - Other: Add bin
