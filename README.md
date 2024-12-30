@@ -93,7 +93,7 @@ cache.to_a
 # => [[:b, '2'], [:a, '1']]
 
 # Now we advance time 5 min 30 sec into the future.
-Timecop.freeze(Time.now + 330)
+Timecop.freeze(Time.now + ((5 * 60) + 30))
 
 # And we see that the expired values have been evicted.
 cache.to_a
@@ -104,7 +104,7 @@ cache.to_a
 cache[:a] = '1'
 cache[:b] = '2'
 
-Timecop.freeze(Time.now + 330)
+Timecop.freeze(Time.now + ((5 * 60) + 30))
 
 cache.ttl = 10 * 60
 
@@ -115,7 +115,7 @@ cache.to_a
 # => [[:b, '2'], [:a, '1']]
 
 # TTL eviction can be triggered manually with the #expire method.
-Timecop.freeze(Time.now + 330)
+Timecop.freeze(Time.now + ((5 * 60) + 30))
 
 cache.expire
 cache.to_a
