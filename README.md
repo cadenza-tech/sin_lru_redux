@@ -162,7 +162,7 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/abcd. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/cadenza-tech/sin_lru_redux. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
