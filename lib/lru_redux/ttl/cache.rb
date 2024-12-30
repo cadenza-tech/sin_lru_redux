@@ -197,17 +197,6 @@ module LruRedux
         evict_if_exceeded
       end
 
-      def store_item(key, value)
-        @data_lru.delete(key)
-        @data_ttl.delete(key)
-        if !value.nil? || !@ignore_nil
-          @data_lru[key] = value
-          @data_ttl[key] = Time.now.to_f
-        end
-        evict_if_exceeded
-        value
-      end
-
       def evict_expired
         return if @ttl == :none
 
@@ -243,6 +232,17 @@ module LruRedux
             false
           end
         end
+      end
+
+      def store_item(key, value)
+        @data_lru.delete(key)
+        @data_ttl.delete(key)
+        if !value.nil? || !@ignore_nil
+          @data_lru[key] = value
+          @data_ttl[key] = Time.now.to_f
+        end
+        evict_if_exceeded
+        value
       end
     end
   end
