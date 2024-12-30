@@ -29,7 +29,7 @@ module Ttl
       @c[:a] = 1
       @c[:b] = 2
 
-      Timecop.freeze(Time.now + (5.5 * 60))
+      Timecop.freeze(Time.now + ((5 * 60) + 30))
 
       @c[:c] = 3
 
@@ -40,7 +40,7 @@ module Ttl
       @c[:a] = 1
       @c[:b] = 2
 
-      Timecop.freeze(Time.now + (5.5 * 60))
+      Timecop.freeze(Time.now + ((5 * 60) + 30))
 
       @c.expire
 
@@ -51,7 +51,7 @@ module Ttl
       @c[:a] = 1
       @c[:b] = 2
 
-      Timecop.freeze(Time.now + (5.5 * 60))
+      Timecop.freeze(Time.now + ((5 * 60) + 30))
 
       @c.max_size = 10
 
@@ -62,7 +62,7 @@ module Ttl
       @c[:a] = 1
       @c[:b] = 2
 
-      Timecop.freeze(Time.now + (5.5 * 60))
+      Timecop.freeze(Time.now + ((5 * 60) + 30))
 
       @c.ttl = 10 * 60
 
@@ -85,7 +85,7 @@ module Ttl
 
       assert_equal([[:a, 1], [:c, 3], [:b, 2]], @c.to_a)
 
-      Timecop.freeze(Time.now + (4.5 * 60))
+      Timecop.freeze(Time.now + ((4 * 60) + 30))
 
       @c[:d] = 4
 
