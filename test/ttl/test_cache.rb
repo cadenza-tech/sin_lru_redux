@@ -89,7 +89,7 @@ module Ttl
 
       @c[:d] = 4
 
-      assert_equal([[:d, 4], [:c, 3], [:b, 2]], @c.to_a)
+      assert_equal([[:d, 4], [:a, 1], [:c, 3]], @c.to_a)
     end
   end
 end

@@ -12,9 +12,9 @@ module LruRedux
         ttl ||= :none
         ignore_nil ||= false
 
-        raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
-        raise ArgumentError.new(:ttl) unless valid_ttl?(ttl)
-        raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+        validate_max_size!(max_size)
+        validate_ttl!(ttl)
+        validate_ignore_nil!(ignore_nil)
 
         @max_size = max_size
         @ttl = ttl
@@ -23,64 +23,59 @@ module LruRedux
         @data_ttl = {}
       end
 
-      def max_size=(max_size)
-        max_size ||= @max_size
+      def max_size=(new_max_size)
+        new_max_size ||= @max_size
 
-        raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
+        validate_max_size!(new_max_size)
 
-        @max_size = max_size
-
+        @max_size = new_max_size
         resize
       end
 
-      def ttl=(ttl)
-        ttl ||= @ttl
-        raise ArgumentError.new(:ttl) unless valid_ttl?(ttl)
+      def ttl=(new_ttl)
+        new_ttl ||= @ttl
 
-        @ttl = ttl
+        validate_ttl!(new_ttl)
 
-        ttl_evict
+        @ttl = new_ttl
+        evict_expired
       end
 
-      def ignore_nil=(ignore_nil)
-        ignore_nil ||= @ignore_nil
-        raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+      def ignore_nil=(new_ignore_nil)
+        new_ignore_nil ||= @ignore_nil
 
-        @ignore_nil = ignore_nil
+        validate_ignore_nil!(new_ignore_nil)
+
+        @ignore_nil = new_ignore_nil
+        evict_nil
       end
 
       def getset(key)
-        ttl_evict
+        evict_expired
 
-        found = true
-        value = @data_lru.delete(key) { found = false }
-        if found
+        key_found = true
+        value = @data_lru.delete(key) { key_found = false }
+
+        if key_found
+          @data_ttl.delete(key)
+          @data_ttl[key] = Time.now.to_f
           @data_lru[key] = value
         else
           result = yield
-
-          if !result.nil? || !@ignore_nil
-            @data_lru[key] = result
-            @data_ttl[key] = Time.now.to_f
-
-            if @data_lru.size > @max_size
-              key, _ = @data_lru.first
-
-              @data_ttl.delete(key)
-              @data_lru.delete(key)
-            end
-          end
-
+          store_item(key, result)
           result
         end
       end
 
       def fetch(key)
-        ttl_evict
+        evict_expired
 
-        found = true
-        value = @data_lru.delete(key) { found = false }
-        if found
+        key_found = true
+        value = @data_lru.delete(key) { key_found = false }
+
+        if key_found
+          @data_ttl.delete(key)
+          @data_ttl[key] = Time.now.to_f
           @data_lru[key] = value
         else
           yield if block_given? # rubocop:disable Style/IfInsideElse
@@ -88,71 +83,55 @@ module LruRedux
       end
 
       def [](key)
-        ttl_evict
+        evict_expired
 
-        found = true
-        value = @data_lru.delete(key) { found = false }
-        @data_lru[key] = value if found
+        key_found = true
+        value = @data_lru.delete(key) { key_found = false }
+        return unless key_found
+
+        @data_ttl.delete(key)
+        @data_ttl[key] = Time.now.to_f
+        @data_lru[key] = value
       end
 
       def []=(key, val)
-        ttl_evict
+        evict_expired
 
-        @data_lru.delete(key)
-        @data_ttl.delete(key)
-
-        @data_lru[key] = val
-        @data_ttl[key] = Time.now.to_f
-
-        if @data_lru.size > @max_size
-          key, _ = @data_lru.first
-
-          @data_ttl.delete(key)
-          @data_lru.delete(key)
-        end
-
-        val # rubocop:disable Lint/Void
+        store_item(key, val)
       end
 
       def each(&block)
-        ttl_evict
+        evict_expired
 
-        array = @data_lru.to_a
-        array.reverse!.each(&block)
+        @data_lru.to_a.reverse_each(&block)
       end
-
-      # used further up the chain, non thread safe each
       alias_method :each_unsafe, :each
 
       def to_a
-        ttl_evict
+        evict_expired
 
-        array = @data_lru.to_a
-        array.reverse!
+        @data_lru.to_a.reverse
       end
 
       def values
-        ttl_evict
+        evict_expired
 
-        vals = @data_lru.values
-        vals.reverse!
+        @data_lru.values.reverse
       end
 
       def delete(key)
-        ttl_evict
+        evict_expired
 
         @data_ttl.delete(key)
         @data_lru.delete(key)
       end
-
       alias_method :evict, :delete
 
       def key?(key)
-        ttl_evict
+        evict_expired
 
         @data_lru.key?(key)
       end
-
       alias_method :has_key?, :key?
 
       def clear
@@ -160,65 +139,110 @@ module LruRedux
         @data_lru.clear
       end
 
-      def expire
-        ttl_evict
-      end
-
       def count
         @data_lru.size
       end
 
-      protected
-
-      # for cache validation only, ensures all is sound
-      def valid?
-        @data_lru.size == @data_ttl.size
-      end
-
-      def ttl_evict
-        return if @ttl == :none
-
-        ttl_horizon = Time.now.to_f - @ttl
-        key, time = @data_ttl.first
-
-        until time.nil? || time > ttl_horizon
-          @data_ttl.delete(key)
-          @data_lru.delete(key)
-
-          key, time = @data_ttl.first
-        end
-      end
-
-      def resize
-        ttl_evict
-
-        while @data_lru.size > @max_size
-          key, _ = @data_lru.first
-
-          @data_ttl.delete(key)
-          @data_lru.delete(key)
-        end
+      def expire
+        evict_expired
       end
 
       private
 
-      def valid_max_size?(max_size)
-        return true if max_size.is_a?(Integer) && max_size >= 1
-
-        false
+      # For cache validation only, ensure all is valid
+      def valid?
+        @data_lru.size == @data_ttl.size
       end
 
-      def valid_ttl?(ttl)
-        return true if ttl == :none
-        return true if ttl.is_a?(Numeric) && ttl >= 0
+      def validate_max_size!(max_size)
+        unless max_size.is_a?(Numeric)
+          raise ArgumentError.new(<<~ERROR)
+            Invalid max_size: #{max_size.inspect}
+            max_size must be a number.
+          ERROR
+        end
+        return if max_size >= 1
 
-        false
+        raise ArgumentError.new(<<~ERROR)
+          Invalid max_size: #{max_size.inspect}
+          max_size must be greater than or equal to 1.
+        ERROR
       end
 
-      def valid_ignore_nil?(ignore_nil)
-        return true if [true, false].include?(ignore_nil)
+      def validate_ttl!(ttl)
+        return if ttl == :none
 
-        false
+        unless ttl.is_a?(Numeric)
+          raise ArgumentError.new(<<~ERROR)
+            Invalid ttl: #{ttl.inspect}
+            ttl must be a number.
+          ERROR
+        end
+        return if ttl >= 0
+
+        raise ArgumentError.new(<<~ERROR)
+          Invalid ttl: #{ttl.inspect}
+          ttl must be greater than or equal to 0.
+        ERROR
+      end
+
+      def validate_ignore_nil!(ignore_nil)
+        return if [true, false].include?(ignore_nil)
+
+        raise ArgumentError.new("Invalid ignore_nil: #{ignore_nil.inspect}")
+      end
+
+      def resize
+        evict_expired
+        evict_if_exceeded
+      end
+
+      def store_item(key, value)
+        @data_lru.delete(key)
+        @data_ttl.delete(key)
+        if !value.nil? || !@ignore_nil
+          @data_lru[key] = value
+          @data_ttl[key] = Time.now.to_f
+        end
+        evict_if_exceeded
+        value
+      end
+
+      def evict_expired
+        return if @ttl == :none
+
+        expiration_threshold = Time.now.to_f - @ttl
+        key, time = @data_ttl.first
+        until time.nil? || time > expiration_threshold
+          @data_lru.delete(key)
+          @data_ttl.delete(key)
+          key, time = @data_ttl.first
+        end
+      end
+
+      def evict_if_exceeded
+        evict_least_recently_used while @data_lru.size > @max_size
+      end
+
+      def evict_least_recently_used
+        return if @data_lru.empty?
+
+        oldest_key, _value = @data_lru.first
+        @data_lru.delete(oldest_key)
+        @data_ttl.delete(oldest_key)
+      end
+
+      def evict_nil
+        return unless @ignore_nil
+
+        @data_lru.reject! do |key, value|
+          if value.nil?
+            @data_ttl.delete(key)
+            true
+          else
+            false
+          end
+        end
       end
     end
   end

@@ -107,6 +107,8 @@ module LruRedux
         end
       end
 
+      private
+
       def valid?
         synchronize do
           super

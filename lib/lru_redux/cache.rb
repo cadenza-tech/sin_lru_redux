@@ -1,57 +1,62 @@
 # frozen_string_literal: true
 
 class LruRedux::Cache
+  attr_reader :max_size, :ignore_nil
+
   def initialize(*args)
     max_size, ignore_nil, _ = args
 
     max_size ||= 1000
     ignore_nil ||= false
 
-    raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
-    raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+    validate_max_size!(max_size)
+    validate_ignore_nil!(ignore_nil)
 
     @max_size = max_size
     @ignore_nil = ignore_nil
     @data = {}
   end
 
-  def max_size=(max_size)
-    max_size ||= @max_size
+  def max_size=(new_max_size)
+    new_max_size ||= @max_size
 
-    raise ArgumentError.new(:max_size) unless valid_max_size?(max_size)
+    validate_max_size!(new_max_size)
 
-    @max_size = max_size
-
-    @data.shift while @data.size > @max_size
+    @max_size = new_max_size
+    evict_excess
   end
 
   def ttl=(_)
     nil
   end
 
-  def ignore_nil=(ignore_nil)
-    ignore_nil ||= @ignore_nil
-    raise ArgumentError.new(:ignore_nil) unless valid_ignore_nil?(ignore_nil)
+  def ignore_nil=(new_ignore_nil)
+    new_ignore_nil ||= @ignore_nil
 
-    @ignore_nil = ignore_nil
+    validate_ignore_nil!(new_ignore_nil)
+
+    @ignore_nil = new_ignore_nil
+    evict_nil
   end
 
   def getset(key)
-    found = true
-    value = @data.delete(key) { found = false }
-    if found
+    key_found = true
+    value = @data.delete(key) { key_found = false }
+
+    if key_found
       @data[key] = value
     else
-      result = @data[key] = yield
-      @data.shift if @data.length > @max_size
+      result = yield
+      store_item(key, result)
       result
     end
   end
 
   def fetch(key)
-    found = true
-    value = @data.delete(key) { found = false }
-    if found
+    key_found = true
+    value = @data.delete(key) { key_found = false }
+
+    if key_found
       @data[key] = value
     else
       yield if block_given? # rubocop:disable Style/IfInsideElse
@@ -59,46 +64,39 @@ class LruRedux::Cache
   end
 
   def [](key)
-    found = true
-    value = @data.delete(key) { found = false }
-    @data[key] = value if found
+    key_found = true
+    value = @data.delete(key) { key_found = false }
+    return unless key_found
+
+    @data[key] = value
   end
 
   def []=(key, val)
-    @data.delete(key)
-    @data[key] = val
-    @data.shift if @data.length > @max_size
-    val # rubocop:disable Lint/Void
+    store_item(key, val)
   end
 
   def each(&block)
-    array = @data.to_a
-    array.reverse!.each(&block)
+    @data.to_a.reverse_each(&block)
   end
-
-  # used further up the chain, non thread safe each
+  # Used further up the chain, non thread safe each
   alias_method :each_unsafe, :each
 
   def to_a
-    array = @data.to_a
-    array.reverse!
+    @data.to_a.reverse
   end
 
   def values
-    vals = @data.values
-    vals.reverse!
+    @data.values.reverse
   end
 
   def delete(key)
     @data.delete(key)
   end
-
   alias_method :evict, :delete
 
   def key?(key)
     @data.key?(key)
   end
-
   alias_method :has_key?, :key?
 
   def clear
@@ -109,24 +107,55 @@ class LruRedux::Cache
     @data.size
   end
 
-  protected
+  private
 
-  # for cache validation only, ensures all is sound
+  # For cache validation only, ensure all is valid
   def valid?
     true
   end
 
-  private
+  def validate_max_size!(max_size)
+    unless max_size.is_a?(Numeric)
+      raise ArgumentError.new(<<~ERROR)
+        Invalid max_size: #{max_size.inspect}
+        max_size must be a number.
+      ERROR
+    end
+    return if max_size >= 1
 
-  def valid_max_size?(max_size)
-    return true if max_size.is_a?(Integer) && max_size >= 1
-
-    false
+    raise ArgumentError.new(<<~ERROR)
+      Invalid max_size: #{max_size.inspect}
+      max_size must be greater than or equal to 1.
+    ERROR
   end
 
-  def valid_ignore_nil?(ignore_nil)
-    return true if [true, false].include?(ignore_nil)
+  def validate_ignore_nil!(ignore_nil)
+    return if [true, false].include?(ignore_nil)
 
-    false
+    raise ArgumentError.new(<<~ERROR)
+      Invalid ignore_nil: #{ignore_nil.inspect}
+      ignore_nil must be a boolean value.
+    ERROR
+  end
+
+  def store_item(key, val)
+    @data.delete(key)
+    @data[key] = val if !val.nil? || !@ignore_nil
+    evict_excess
+    val
+  end
+
+  def evict_excess
+    @data.shift while @data.size > @max_size
+  end
+
+  if RUBY_VERSION >= '2.6.0'
+    def evict_nil
+      @data.compact!
+    end
+  else
+    def evict_nil
+      @data.reject! { |_key, value| value.nil? }
+    end
   end
 end
