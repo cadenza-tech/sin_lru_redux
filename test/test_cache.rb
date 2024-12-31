@@ -108,6 +108,10 @@ class TestCache < Minitest::Test
 
     assert_equal(1, @cache[:a])
     assert_equal({ b: 2, c: 4, a: 1 }, @cache.instance_variable_get(@data_name))
+
+    @cache[:d] = 5
+
+    assert_equal({ c: 4, a: 1, d: 5 }, @cache.instance_variable_get(@data_name))
   end
 
   def test_each
@@ -130,20 +134,16 @@ class TestCache < Minitest::Test
     @cache[:a] = 1
     @cache[:b] = 2
     @cache[:c] = 3
-    @cache[:d] = 4
 
-    assert_equal([[:d, 4], [:c, 3], [:b, 2]], @cache.to_a)
-    assert_nil(@cache[:a])
+    assert_equal([[:c, 3], [:b, 2], [:a, 1]], @cache.to_a)
   end
 
   def test_values
     @cache[:a] = 1
     @cache[:b] = 2
     @cache[:c] = 3
-    @cache[:d] = 4
 
-    assert_equal([4, 3, 2], @cache.values)
-    assert_nil(@cache[:a])
+    assert_equal([3, 2, 1], @cache.values)
   end
 
   def test_delete
@@ -193,15 +193,18 @@ class TestCache < Minitest::Test
     assert_equal(3, @cache.count)
   end
 
-  def test_validate_max_size
+  def test_validate_max_size!
+    assert_raises(ArgumentError) do
+      LruRedux::Cache.new('invalid', false)
+    end
     assert_raises(ArgumentError) do
       LruRedux::Cache.new(0, false)
     end
   end
 
-  def test_validate_ignore_nil
+  def test_validate_ignore_nil!
     assert_raises(ArgumentError) do
-      LruRedux::Cache.new(100, 'invalid')
+      LruRedux::Cache.new(1, 'invalid')
     end
   end
 
