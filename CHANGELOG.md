@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.2.0] - 2024-12-31
+
+- New: Raise an error when trying to assign nil to max_size, ttl, or ignore_nil
+- Fix: Fix a bug where ignore_nil was not updated when ignore_nil was specified as false
+- Fix: Fix a bug where items with nil value were deleted when ignore_nil was changed
+- Refactor: Improve implementation
+- Test: Improve tests
+- Other: Improve CI
+- Other: Improve documents
+
 ## [2.1.0] - 2024-12-30
 
 - New: Set default max_size to 1000
