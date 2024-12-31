@@ -4,17 +4,14 @@ require_relative 'test_helper'
 require_relative 'test_cache'
 
 class TestThreadSafeCache < TestCache
-  def setup
-    @c = LruRedux::ThreadSafeCache.new(3)
-  end
-
   def test_recursion
-    @c[:a] = 1
-    @c[:b] = 2
+    @cache[:a] = 1
+    @cache[:b] = 2
+    @cache[:c] = 3
 
-    # should not blow up
-    @c.each do |k, _| # rubocop:disable Style/HashEachMethods
-      @c[k]
+    # Should not blow up
+    @cache.each do |key, _value| # rubocop:disable Style/HashEachMethods
+      @cache[key]
     end
   end
 end

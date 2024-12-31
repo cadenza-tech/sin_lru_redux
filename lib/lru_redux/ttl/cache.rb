@@ -24,17 +24,14 @@ module LruRedux
       end
 
       def max_size=(new_max_size)
-        new_max_size ||= @max_size
-
         validate_max_size!(new_max_size)
 
         @max_size = new_max_size
-        resize
+        evict_expired
+        evict_excess
       end
 
       def ttl=(new_ttl)
-        new_ttl ||= @ttl
-
         validate_ttl!(new_ttl)
 
         @ttl = new_ttl
@@ -42,8 +39,6 @@ module LruRedux
       end
 
       def ignore_nil=(new_ignore_nil)
-        new_ignore_nil ||= @ignore_nil
-
         validate_ignore_nil!(new_ignore_nil)
 
         @ignore_nil = new_ignore_nil
@@ -192,11 +187,6 @@ module LruRedux
         raise ArgumentError.new("Invalid ignore_nil: #{ignore_nil.inspect}")
       end
 
-      def resize
-        evict_expired
-        evict_if_exceeded
-      end
-
       def evict_expired
         return if @ttl == :none
 
@@ -209,7 +199,7 @@ module LruRedux
         end
       end
 
-      def evict_if_exceeded
+      def evict_excess
         evict_least_recently_used while @data_lru.size > @max_size
       end
 
@@ -241,7 +231,7 @@ module LruRedux
           @data_lru[key] = value
           @data_ttl[key] = Time.now.to_f
         end
-        evict_if_exceeded
+        evict_excess
         value
       end
     end

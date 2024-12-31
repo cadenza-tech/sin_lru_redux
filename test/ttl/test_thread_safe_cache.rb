@@ -7,16 +7,18 @@ module Ttl
   class TestThreadSafeCache < Ttl::TestCache
     def setup
       Timecop.freeze(Time.now)
-      @c = LruRedux::TTL::ThreadSafeCache.new(3, 5 * 60)
+      @cache = LruRedux::TTL::ThreadSafeCache.new(3, 5 * 60, false)
+      @data_name = :@data_lru
     end
 
     def test_recursion
-      @c[:a] = 1
-      @c[:b] = 2
+      @cache[:a] = 1
+      @cache[:b] = 2
+      @cache[:c] = 3
 
-      # should not blow up
-      @c.each do |k, _| # rubocop:disable Style/HashEachMethods
-        @c[k]
+      # Should not blow up
+      @cache.each do |key, _value| # rubocop:disable Style/HashEachMethods
+        @cache[key]
       end
     end
   end
