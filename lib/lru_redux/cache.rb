@@ -18,8 +18,6 @@ class LruRedux::Cache
   end
 
   def max_size=(new_max_size)
-    new_max_size ||= @max_size
-
     validate_max_size!(new_max_size)
 
     @max_size = new_max_size
@@ -31,8 +29,6 @@ class LruRedux::Cache
   end
 
   def ignore_nil=(new_ignore_nil)
-    new_ignore_nil ||= @ignore_nil
-
     validate_ignore_nil!(new_ignore_nil)
 
     @ignore_nil = new_ignore_nil
@@ -144,10 +140,14 @@ class LruRedux::Cache
 
   if RUBY_VERSION >= '2.6.0'
     def evict_nil
+      return unless @ignore_nil
+
       @data.compact!
     end
   else
     def evict_nil
+      return unless @ignore_nil
+
       @data.reject! { |_key, value| value.nil? }
     end
   end
