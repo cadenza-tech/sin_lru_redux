@@ -187,6 +187,13 @@ module LruRedux
         raise ArgumentError.new("Invalid ignore_nil: #{ignore_nil.inspect}")
       end
 
+      def evict_excess
+        while @data_lru.size > @max_size
+          @data_lru.shift
+          @data_ttl.shift
+        end
+      end
+
       def evict_expired
         return if @ttl == :none
 
@@ -197,18 +204,6 @@ module LruRedux
           @data_ttl.delete(key)
           key, time = @data_ttl.first
         end
-      end
-
-      def evict_excess
-        evict_least_recently_used while @data_lru.size > @max_size
-      end
-
-      def evict_least_recently_used
-        return if @data_lru.empty?
-
-        oldest_key, _value = @data_lru.first
-        @data_lru.delete(oldest_key)
-        @data_ttl.delete(oldest_key)
       end
 
       def evict_nil
