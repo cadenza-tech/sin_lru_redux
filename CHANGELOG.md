@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.1] - 2024-12-31
+
+- Refactor: Improve implementation
+- Test: Improve tests
+
 ## [2.2.0] - 2024-12-31
 
 - New: Raise an error when trying to assign nil to max_size, ttl, or ignore_nil
