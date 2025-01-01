@@ -49,7 +49,7 @@ cache[:a] # a pushed to front
 cache.to_a
 # [[:a, '1'], [:b, '2']]
 cache.delete(:a)
-cache.each { |k, v| puts "#{k} #{v}"}
+cache.each { |key, value| puts "#{key} #{value}"}
 # b 2
 
 cache.max_size = 200 # cache now stores 200 items
