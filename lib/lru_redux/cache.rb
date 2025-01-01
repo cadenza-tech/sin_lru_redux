@@ -14,7 +14,7 @@ class LruRedux::Cache
 
     @max_size = max_size
     @ignore_nil = ignore_nil
-    @data = {}
+    @data_lru = {}
   end
 
   def max_size=(new_max_size)
@@ -37,10 +37,10 @@ class LruRedux::Cache
 
   def getset(key)
     key_found = true
-    value = @data.delete(key) { key_found = false }
+    value = @data_lru.delete(key) { key_found = false }
 
     if key_found
-      @data[key] = value
+      @data_lru[key] = value
     else
       result = yield
       store_item(key, result)
@@ -50,10 +50,10 @@ class LruRedux::Cache
 
   def fetch(key)
     key_found = true
-    value = @data.delete(key) { key_found = false }
+    value = @data_lru.delete(key) { key_found = false }
 
     if key_found
-      @data[key] = value
+      @data_lru[key] = value
     else
       yield if block_given? # rubocop:disable Style/IfInsideElse
     end
@@ -61,10 +61,10 @@ class LruRedux::Cache
 
   def [](key)
     key_found = true
-    value = @data.delete(key) { key_found = false }
+    value = @data_lru.delete(key) { key_found = false }
     return unless key_found
 
-    @data[key] = value
+    @data_lru[key] = value
   end
 
   def []=(key, val)
@@ -72,36 +72,38 @@ class LruRedux::Cache
   end
 
   def each(&block)
-    @data.to_a.reverse_each(&block)
+    @data_lru.to_a.reverse_each(&block)
   end
   # Used further up the chain, non thread safe each
   alias_method :each_unsafe, :each
 
   def to_a
-    @data.to_a.reverse
+    @data_lru.to_a.reverse
   end
 
   def values
-    @data.values.reverse
+    @data_lru.values.reverse
   end
 
   def delete(key)
-    @data.delete(key)
+    @data_lru.delete(key)
   end
   alias_method :evict, :delete
 
   def key?(key)
-    @data.key?(key)
+    @data_lru.key?(key)
   end
   alias_method :has_key?, :key?
 
   def clear
-    @data.clear
+    @data_lru.clear
   end
 
   def count
-    @data.size
+    @data_lru.size
   end
+  alias_method :length, :count
+  alias_method :size, :count
 
   private
 
@@ -135,26 +137,26 @@ class LruRedux::Cache
   end
 
   def evict_excess
-    @data.shift while @data.size > @max_size
+    @data_lru.shift while @data_lru.size > @max_size
   end
 
   if RUBY_VERSION >= '2.6.0'
     def evict_nil
       return unless @ignore_nil
 
-      @data.compact!
+      @data_lru.compact!
     end
   else
     def evict_nil
       return unless @ignore_nil
 
-      @data.reject! { |_key, value| value.nil? }
+      @data_lru.reject! { |_key, value| value.nil? }
     end
   end
 
   def store_item(key, val)
-    @data.delete(key)
-    @data[key] = val if !val.nil? || !@ignore_nil
+    @data_lru.delete(key)
+    @data_lru[key] = val if !val.nil? || !@ignore_nil
     evict_excess
     val
   end

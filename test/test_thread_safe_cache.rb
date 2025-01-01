@@ -6,7 +6,6 @@ require_relative 'test_cache'
 class TestThreadSafeCache < TestCache
   def setup
     @cache = LruRedux::ThreadSafeCache.new(3, false)
-    @data_name = :@data
   end
 
   def test_validate_max_size!
