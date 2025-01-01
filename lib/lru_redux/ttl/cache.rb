@@ -137,6 +137,8 @@ module LruRedux
       def count
         @data_lru.size
       end
+      alias_method :length, :count
+      alias_method :size, :count
 
       def expire
         evict_expired
