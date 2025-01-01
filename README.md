@@ -145,10 +145,13 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 - `#evict` Alias for `#delete`.
 - `#clear` Clears the cache. Returns nil.
 - `#each` Takes a block.  Executes the block on each key-value pair in LRU order (most recent first).
+- `#each_unsafe` Alias for `#each`.
 - `#to_a` Return an array of key-value pairs (arrays) in LRU order (most recent first).
 - `#key?` Takes a key.  Returns true if the key is cached, otherwise false.
 - `#has_key?` Alias for `#key?`.
 - `#count` Return the current number of items stored in the cache.
+- `#length` Alias for `#count`.
+- `#size` Alias for `#count`.
 - `#max_size` Returns the current maximum size of the cache.
 - `#max_size=` Takes a positive number.  Changes the current max_size and triggers a resize.  Also triggers TTL eviction on the TTL cache.
 - `#ignore_nil` Returns the current ignore nil setting.
