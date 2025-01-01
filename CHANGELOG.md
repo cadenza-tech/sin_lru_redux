@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0] - 2025-1-1
+
+- New: Add alias method `length` and `size` for `count`
+- Refactor: Improve implementation
+- Test: Update tests
+- Other: Improve README.md
+
 ## [2.2.1] - 2024-12-31
 
 - Refactor: Improve implementation
