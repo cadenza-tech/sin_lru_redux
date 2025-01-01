@@ -5,7 +5,6 @@ require_relative 'test_helper'
 class TestCache < Minitest::Test
   def setup
     @cache = LruRedux::Cache.new(3, false)
-    @data_name = :@data
   end
 
   def test_initialization
@@ -18,21 +17,21 @@ class TestCache < Minitest::Test
     @cache[:b] = 2
     @cache[:c] = 3
 
-    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
 
     @cache.max_size = 2
 
     assert_equal(2, @cache.max_size)
-    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
 
     @cache.max_size = 3
 
     assert_equal(3, @cache.max_size)
-    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
 
     @cache[:d] = 4
 
-    assert_equal({ b: 2, c: 3, d: 4 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ b: 2, c: 3, d: 4 }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_max_size_set_to_nil
@@ -46,26 +45,26 @@ class TestCache < Minitest::Test
     @cache[:b] = 2
     @cache[:c] = nil
 
-    assert_equal({ a: 1, b: 2, c: nil }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, c: nil }, @cache.instance_variable_get(:@data_lru))
 
     @cache.ignore_nil = true
 
     assert(@cache.ignore_nil)
-    assert_equal({ a: 1, b: 2 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2 }, @cache.instance_variable_get(:@data_lru))
 
     @cache[:b] = nil
 
     assert_nil(@cache[:b])
-    assert_equal({ a: 1 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1 }, @cache.instance_variable_get(:@data_lru))
 
     @cache.ignore_nil = false
 
     refute(@cache.ignore_nil)
-    assert_equal({ a: 1 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1 }, @cache.instance_variable_get(:@data_lru))
 
     @cache[:b] = 2
 
-    assert_equal({ a: 1, b: 2 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2 }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_ignore_nil_set_to_nil
@@ -80,7 +79,7 @@ class TestCache < Minitest::Test
     result = @cache.getset(:c) { 3 }
 
     assert_equal(3, result)
-    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_fetch
@@ -93,7 +92,7 @@ class TestCache < Minitest::Test
     assert_equal(1, result_a)
     assert_nil(result_b)
     assert_equal(4, result_c)
-    assert_equal({ a: 1, b: nil }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: nil }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_set_and_get
@@ -101,17 +100,17 @@ class TestCache < Minitest::Test
     @cache[:b] = 2
     @cache[:c] = 3
 
-    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
 
     assert_equal(4, @cache[:c] = 4)
-    assert_equal({ a: 1, b: 2, c: 4 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, c: 4 }, @cache.instance_variable_get(:@data_lru))
 
     assert_equal(1, @cache[:a])
-    assert_equal({ b: 2, c: 4, a: 1 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ b: 2, c: 4, a: 1 }, @cache.instance_variable_get(:@data_lru))
 
     @cache[:d] = 5
 
-    assert_equal({ c: 4, a: 1, d: 5 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ c: 4, a: 1, d: 5 }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_each
@@ -152,7 +151,7 @@ class TestCache < Minitest::Test
     @cache[:c] = 3
     @cache.delete(:a)
 
-    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ b: 2, c: 3 }, @cache.instance_variable_get(:@data_lru))
     assert_nil(@cache[:a])
 
     assert_equal(2, @cache.delete(:b))
@@ -162,7 +161,7 @@ class TestCache < Minitest::Test
     @cache[:e] = 5
     @cache[:f] = 6
 
-    assert_equal({ d: 4, e: 5, f: 6 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ d: 4, e: 5, f: 6 }, @cache.instance_variable_get(:@data_lru))
     assert_nil(@cache[:a])
     assert_nil(@cache[:b])
     assert_nil(@cache[:c])
@@ -182,7 +181,7 @@ class TestCache < Minitest::Test
 
     @cache.clear
 
-    assert_empty(@cache.instance_variable_get(@data_name))
+    assert_empty(@cache.instance_variable_get(:@data_lru))
   end
 
   def test_count
@@ -209,19 +208,19 @@ class TestCache < Minitest::Test
   end
 
   def test_evict_excess
-    @cache.instance_variable_set(@data_name, { a: 1, b: 2, c: 3, d: 4, e: 5 })
+    @cache.instance_variable_set(:@data_lru, { a: 1, b: 2, c: 3, d: 4, e: 5 })
 
     @cache.send(:evict_excess)
 
-    assert_equal({ c: 3, d: 4, e: 5 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ c: 3, d: 4, e: 5 }, @cache.instance_variable_get(:@data_lru))
   end
 
   def test_evict_nil
     @cache.ignore_nil = true
-    @cache.instance_variable_set(@data_name, { a: 1, b: 2, c: nil, d: 4, e: nil })
+    @cache.instance_variable_set(:@data_lru, { a: 1, b: 2, c: nil, d: 4, e: nil })
 
     @cache.send(:evict_nil)
 
-    assert_equal({ a: 1, b: 2, d: 4 }, @cache.instance_variable_get(@data_name))
+    assert_equal({ a: 1, b: 2, d: 4 }, @cache.instance_variable_get(:@data_lru))
   end
 end

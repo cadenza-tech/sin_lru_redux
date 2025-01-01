@@ -8,7 +8,6 @@ module Ttl
     def setup
       Timecop.freeze(Time.now)
       @cache = LruRedux::TTL::ThreadSafeCache.new(3, 5 * 60, false)
-      @data_name = :@data_lru
     end
 
     def teardown
