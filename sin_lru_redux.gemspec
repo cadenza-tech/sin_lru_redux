@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
     'changelog_uri' => "#{github_root_uri}/blob/v#{spec.version}/CHANGELOG.md",
     'bug_tracker_uri' => "#{github_root_uri}/issues",
     'documentation_uri' => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}",
+    'funding_uri' => 'https://patreon.com/CadenzaTech',
     'rubygems_mfa_required' => 'true'
   }
 
