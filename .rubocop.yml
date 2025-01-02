@@ -22,41 +22,23 @@ Layout/LineLength:
   Max: 150
   AllowURI: false
 
-# https://docs.rubocop.org/rubocop/cops_lint.html#lintmissingsuper
-Lint/MissingSuper:
-  Enabled: true
-  Exclude:
-    - 'app/views/components/**/component.rb'
-
 # https://docs.rubocop.org/rubocop/cops_metrics.html#metricsabcsize
 Metrics/AbcSize:
   Enabled: true
-  Max: 30
+  Max: 25
 
 # https://docs.rubocop.org/rubocop/cops_metrics.html#metricsblocklength
 Metrics/BlockLength:
   Enabled: true
   Max: 30
   Exclude:
-    - 'config/routes.rb'
-    - 'db/seeds.rb'
-    - 'spec/**/*_spec.rb'
-
-# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsblocknesting
-Metrics/BlockNesting:
-  Enabled: true
-  Max: 3
+    - 'sin_lru_redux.gemspec'
 
 # https://docs.rubocop.org/rubocop/cops_metrics.html#metricsclasslength
 Metrics/ClassLength:
   Enabled: true
   CountComments: false
-  Max: 400
-
-# https://docs.rubocop.org/rubocop/cops_metrics.html#metricscyclomaticcomplexity
-Metrics/CyclomaticComplexity:
-  Enabled: true
-  Max: 20
+  Max: 200
 
 # https://docs.rubocop.org/rubocop/cops_metrics.html#metricsmethodlength
 Metrics/MethodLength:
@@ -74,11 +56,6 @@ Metrics/ParameterLists:
   Enabled: true
   Max: 5
   CountKeywordArgs: true
-
-# https://docs.rubocop.org/rubocop/cops_metrics.html#metricsperceivedcomplexity
-Metrics/PerceivedComplexity:
-  Enabled: true
-  Max: 20
 
 # https://docs.rubocop.org/rubocop/cops_naming.html#namingaccessormethodname
 Naming/AccessorMethodName:
@@ -111,12 +88,6 @@ Style/ArgumentsForwarding:
 # https://docs.rubocop.org/rubocop/cops_style.html#styleasciicomments
 Style/AsciiComments:
   Enabled: false
-
-# https://docs.rubocop.org/rubocop/cops_style.html#styleblockcomments
-Style/BlockComments:
-  Enabled: true
-  Exclude:
-    - 'spec/spec_helper.rb'
 
 # https://docs.rubocop.org/rubocop/cops_style.html#styleclassandmodulechildren
 Style/ClassAndModuleChildren:
