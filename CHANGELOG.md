@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.0] - 2025-1-2
+
+- New: Be able to require `sin_lru_redux` instead of `lru_redux`
+- Other: Update .rubocop.yml
+- Other: Add how to sponsor
+
 ## [2.3.0] - 2025-1-1
 
 - New: Add alias method `length` and `size` for `count`
