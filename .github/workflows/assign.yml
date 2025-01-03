@@ -1,0 +1,13 @@
+name: Assign
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    if: ${{ toJSON(github.event.pull_request.assignees) == '[]' && !contains(fromJSON('["dependabot[bot]", "github-actions[bot]", "actions-user"]'), github.actor) }}
+    steps:
+      - name: Assign self to pull request
+        uses: technote-space/assign-author@v1
