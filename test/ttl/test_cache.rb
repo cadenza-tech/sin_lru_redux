@@ -166,5 +166,24 @@ module Ttl
       assert_equal({ a: 1, b: 2, d: 4 }, @cache.instance_variable_get(:@data_lru))
       assert_equal({ a: Time.now.to_f, b: Time.now.to_f, d: Time.now.to_f }, @cache.instance_variable_get(:@data_ttl))
     end
+
+    def test_store_item # rubocop:disable Metrics/AbcSize
+      @cache.instance_variable_set(:@data_lru, { a: 1, b: 2, c: 3 })
+      @cache.instance_variable_set(:@data_ttl, { a: Time.now.to_f, b: Time.now.to_f, c: Time.now.to_f })
+
+      Timecop.freeze(Time.now + 60)
+
+      @cache.send(:store_item, :d, 4)
+
+      assert_equal({ b: 2, c: 3, d: 4 }, @cache.instance_variable_get(:@data_lru))
+      assert_equal({ b: Time.now.to_f - 60, c: Time.now.to_f - 60, d: Time.now.to_f }, @cache.instance_variable_get(:@data_ttl))
+
+      Timecop.freeze(Time.now + 60)
+
+      assert_equal(5, @cache.send(:store_item, :d, 5))
+
+      assert_equal({ b: 2, c: 3, d: 5 }, @cache.instance_variable_get(:@data_lru))
+      assert_equal({ b: Time.now.to_f - (2 * 60), c: Time.now.to_f - (2 * 60), d: Time.now.to_f }, @cache.instance_variable_get(:@data_ttl))
+    end
   end
 end
