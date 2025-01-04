@@ -223,4 +223,16 @@ class TestCache < Minitest::Test
 
     assert_equal({ a: 1, b: 2, d: 4 }, @cache.instance_variable_get(:@data_lru))
   end
+
+  def test_store_item
+    @cache.instance_variable_set(:@data_lru, { a: 1, b: 2, c: 3 })
+
+    @cache.send(:store_item, :d, 4)
+
+    assert_equal({ b: 2, c: 3, d: 4 }, @cache.instance_variable_get(:@data_lru))
+
+    assert_equal(5, @cache.send(:store_item, :d, 5))
+
+    assert_equal({ b: 2, c: 3, d: 5 }, @cache.instance_variable_get(:@data_lru))
+  end
 end
