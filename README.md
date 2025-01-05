@@ -8,12 +8,12 @@ Forked from [LruRedux](https://github.com/SamSaffron/lru_redux).
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [TTL Cache](#ttl-cache)
 - [Cache Methods](#cache-methods)
+- [Changelog](#changelog)
 - [Contributing](#contributing)
-- [Changelog](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CHANGELOG.md)
 - [License](#license)
 - [Code of Conduct](#code-of-conduct)
+- [Sponsor](#sponsor)
 
 ## Installation
 
@@ -162,6 +162,10 @@ cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
 - `#ttl` Returns the current TTL of the cache.
 - `#ttl=` Takes `:none` or a positive number.  Changes the current ttl and triggers a TTL eviction.
 - `#expire` Triggers a TTL eviction.
+
+## Changelog
+
+See [CHANGELOG.md](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CHANGELOG.md).
 
 ## Contributing
 
