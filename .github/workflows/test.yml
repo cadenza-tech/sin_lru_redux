@@ -7,6 +7,8 @@ on:
       - 'Rakefile'
       - 'sin_lru_redux.gemspec'
       - '**/*.rb'
+  schedule:
+    - cron: '0 12 * * 5'
 permissions:
   contents: read
 jobs:
@@ -26,13 +28,17 @@ jobs:
           - '3.2'
           - '3.3'
           - '3.4'
+          - 'ruby-head'
           - 'jruby-9.4'
+          - 'jruby-head'
           - 'truffleruby-22'
           - 'truffleruby-23'
           - 'truffleruby-24'
+          - 'truffleruby-head'
           - 'truffleruby+graalvm-22'
           - 'truffleruby+graalvm-23'
           - 'truffleruby+graalvm-24'
+          - 'truffleruby+graalvm-head'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
