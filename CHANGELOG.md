@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.0] - 2025-1-17
+
+- New: Add SinLruRedux module compatible with LruRedux module
+- Refactor: Improve implementation
+- Test: Improve tests
+- Other: Improve CI
+- Other: Fix README.md
+
 ## [2.4.0] - 2025-1-2
 
 - New: Be able to require `sin_lru_redux` instead of `lru_redux`
