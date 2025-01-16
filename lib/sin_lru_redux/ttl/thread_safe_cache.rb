@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module LruRedux
+module SinLruRedux
   module TTL
     class ThreadSafeCache < Cache
-      include ::LruRedux::Util::SafeSync
+      include ::SinLruRedux::Util::SafeSync
     end
   end
 end
