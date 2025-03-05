@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1] - 2025-3-5
+
+- Other: Update summary
+- Other: Update .rubocop.yml
+- Other: Add .editorconfig
+- Other Update README.md
+
 ## [2.5.0] - 2025-1-17
 
 - New: Add SinLruRedux module compatible with LruRedux module
