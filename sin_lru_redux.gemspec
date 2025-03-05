@@ -5,10 +5,7 @@ require_relative 'lib/lru_redux/version'
 Gem::Specification.new do |spec|
   spec.name = 'sin_lru_redux'
   spec.version = LruRedux::VERSION
-  spec.description = <<~DESCRIPTION
-    Efficient and thread-safe LRU cache.
-    Forked from LruRedux.
-  DESCRIPTION
+  spec.description = 'Efficient and thread-safe LRU cache.'
   spec.summary = 'Efficient and thread-safe LRU cache.'
   spec.authors = ['Masahiro']
   spec.email = ['watanabe@cadenza-tech.com']
