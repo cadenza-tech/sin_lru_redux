@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.5.2] - 2025-3-12
+
+- Other: Update summary
+
 ## [2.5.1] - 2025-3-5
 
 - Other: Update summary
