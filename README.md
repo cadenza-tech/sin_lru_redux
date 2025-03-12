@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/cadenza-tech/sin_lru_redux?label=License&labelColor=343B42&color=blue)](https://github.com/cadenza-tech/sin_lru_redux/blob/main/LICENSE.txt) [![Tag](https://img.shields.io/github/tag/cadenza-tech/sin_lru_redux?label=Tag&logo=github&labelColor=343B42&color=2EBC4F)](https://github.com/cadenza-tech/sin_lru_redux/blob/main/CHANGELOG.md) [![Release](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/release.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Arelease) [![Test](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/test.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Atest) [![Lint](https://github.com/cadenza-tech/sin_lru_redux/actions/workflows/lint.yml/badge.svg)](https://github.com/cadenza-tech/sin_lru_redux/actions?query=workflow%3Alint)
 
-Efficient and thread-safe LRU cache.
+Efficient and thread-safe LRU cache
 
 Forked from [LruRedux](https://github.com/SamSaffron/lru_redux).
 
