@@ -89,7 +89,7 @@ module LruRedux
         end
       end
 
-      def has_key?(key) # rubocop:disable Naming/PredicateName
+      def has_key?(key) # rubocop:disable Naming/PredicatePrefix
         synchronize do
           super(key)
         end
