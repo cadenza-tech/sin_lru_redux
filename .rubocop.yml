@@ -7,6 +7,10 @@ AllCops:
   TargetRubyVersion: 2.3
   NewCops: enable
 
+# https://docs.rubocop.org/rubocop/cops_gemspec.html#gemspecattributeassignment
+Gemspec/AttributeAssignment:
+  Enabled: false
+
 # https://docs.rubocop.org/rubocop/cops_gemspec.html#gemspecrequiredrubyversion
 Gemspec/RequiredRubyVersion:
   Enabled: false
