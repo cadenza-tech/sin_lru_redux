@@ -8,4 +8,6 @@ Rake::TestTask.new(:test) do |task|
   task.pattern = 'test/**/test_*.rb'
 end
 
-RuboCop::RakeTask.new
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.options = ['--format', ENV['RUBOCOP_FORMAT']] if ENV['RUBOCOP_FORMAT']
+end

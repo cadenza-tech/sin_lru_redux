@@ -21,4 +21,6 @@ jobs:
           ruby-version: 3.4
           bundler-cache: true
       - name: RuboCop
+        env:
+          RUBOCOP_FORMAT: github
         run: bundle exec rake rubocop
