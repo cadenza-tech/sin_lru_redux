@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'json', '~> 2.7.6'
 gem 'minitest'
 gem 'rake'
 gem 'rubocop'
