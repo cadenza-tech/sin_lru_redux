@@ -395,3 +395,18 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# AI coding assistant instructions and local config; kept per-developer rather than shared.
+.claude/
+.cursor/
+.cursorrules
+.devin/
+.gemini/
+.mcp.json
+.opencode/
+.windsurf/
+.windsurfrules
+AGENTS.md
+CLAUDE.local.md
+CLAUDE.md
+GEMINI.md
