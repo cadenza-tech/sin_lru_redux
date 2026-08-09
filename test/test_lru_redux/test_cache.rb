@@ -191,6 +191,8 @@ module TestLruRedux
       @cache[:c] = 3
 
       assert_equal(3, @cache.count)
+      assert_equal(3, @cache.length)
+      assert_equal(3, @cache.size)
     end
 
     def test_validate_max_size!
