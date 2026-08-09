@@ -112,6 +112,25 @@ module TestLruRedux
         assert_equal({ c: 3 }, @cache.instance_variable_get(:@data_lru))
       end
 
+      def test_count
+        @cache[:a] = 1
+        @cache[:b] = 2
+
+        Timecop.freeze(Time.now + (1 * 60))
+
+        @cache[:c] = 3
+
+        assert_equal(3, @cache.count)
+        assert_equal(3, @cache.length)
+        assert_equal(3, @cache.size)
+
+        Timecop.freeze(Time.now + (4 * 60))
+
+        assert_equal(1, @cache.count)
+        assert_equal(1, @cache.length)
+        assert_equal(1, @cache.size)
+      end
+
       def test_validate_max_size!
         assert_raises(ArgumentError) do
           ::LruRedux::TTL::Cache.new('invalid', 0, false)
