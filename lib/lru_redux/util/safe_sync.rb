@@ -107,6 +107,18 @@ module LruRedux
         end
       end
 
+      def length
+        synchronize do
+          super
+        end
+      end
+
+      def size
+        synchronize do
+          super
+        end
+      end
+
       private
 
       def valid?
