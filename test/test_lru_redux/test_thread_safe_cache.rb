@@ -1,37 +1,17 @@
 # frozen_string_literal: true
 
-require_relative 'test_cache'
+require_relative '../support/cache_tests'
+require_relative '../support/thread_safe_cache_tests'
 
 module TestLruRedux
-  class TestThreadSafeCache < TestCache
-    def setup
-      @cache = ::LruRedux::ThreadSafeCache.new(3, false)
-    end
+  class TestThreadSafeCache < Minitest::Test
+    include CacheTests
+    include ThreadSafeCacheTests
 
-    def test_validate_max_size!
-      assert_raises(ArgumentError) do
-        ::LruRedux::ThreadSafeCache.new('invalid', false)
-      end
-      assert_raises(ArgumentError) do
-        ::LruRedux::ThreadSafeCache.new(0, false)
-      end
-    end
+    private
 
-    def test_validate_ignore_nil!
-      assert_raises(ArgumentError) do
-        ::LruRedux::ThreadSafeCache.new(1, 'invalid')
-      end
-    end
-
-    def test_recursion
-      @cache[:a] = 1
-      @cache[:b] = 2
-      @cache[:c] = 3
-
-      # Should not blow up
-      @cache.each do |key, _value| # rubocop:disable Style/HashEachMethods
-        @cache[key]
-      end
+    def cache_class
+      ::LruRedux::ThreadSafeCache
     end
   end
 end
