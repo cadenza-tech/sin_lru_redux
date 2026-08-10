@@ -1,5 +1,35 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.5.3] - 2026-08-10
+
+### Changed
+
+- Restructure cache tests with shared modules
+- Add tests for TTL cache count and expire
+- Minimize gem version constraints
+- Remove unneeded json gem dependency
+- Pin json and minitest gem versions on TruffleRuby
+- Remove ineffective version metadata from gemspec
+- Improve lint CI
+- Remove assign workflow
+- Add newer Ruby versions to test matrix
+- Update release and lint CI Ruby version to 4.0
+- Upgrade actions/checkout to v7
+- Update .rubocop.yml
+- Update .gitignore
+- Update README.md
+- Update sponsor links
+
+### Fixed
+
+- Fix `LruRedux::TTL::Cache#count`, `#length`, and `#size` to evict expired items
+- Fix `LruRedux::TTL::ThreadSafeCache#expire`, `#length`, and `#size` to synchronize access
+
 ## [2.5.2] - 2025-3-12
 
 - Other: Update summary
@@ -113,3 +143,21 @@
 ## [0.0.4] - 2013-4-23
 
 - Initial version
+
+[2.5.3]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.5.2...v2.5.3
+[2.5.2]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.5.1...v2.5.2
+[2.5.1]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.5.0...v2.5.1
+[2.5.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.4.0...v2.5.0
+[2.4.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.2.1...v2.3.0
+[2.2.1]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.2.0...v2.2.1
+[2.2.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.0.1...v2.1.0
+[2.0.1]: https://github.com/cadenza-tech/sin_lru_redux/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/cadenza-tech/sin_lru_redux/compare/v0.8.4...v1.0.0
+[0.8.4]: https://github.com/cadenza-tech/sin_lru_redux/compare/v0.8.3...v0.8.4
+[0.8.3]: https://github.com/cadenza-tech/sin_lru_redux/compare/v0.8.2...v0.8.3
+[0.8.2]: https://github.com/cadenza-tech/sin_lru_redux/compare/0.8.1...v0.8.2
+[0.8.1]: https://github.com/cadenza-tech/sin_lru_redux/releases/tag/0.8.1
