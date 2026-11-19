@@ -55,6 +55,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+      - name: Install gems serially on TruffleRuby 25
+        if: matrix.ruby-version == 'truffleruby-25' || matrix.ruby-version == 'truffleruby+graalvm-25'
+        run: echo "BUNDLE_JOBS=1" >> "$GITHUB_ENV"
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
